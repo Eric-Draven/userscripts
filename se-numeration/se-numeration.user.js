@@ -345,6 +345,7 @@
 					$('.g.mnr-c.g-blk, #imagebox_bigimages, .g .mod').remove();
 					$('.g').not(':has(.rc .s)' && ':has(.r)').remove();
 					$('.g').addClass('se-goodblock');
+					$('.se-goodblock h3 a').attr('target', '_blank');
 
 					let position = getUrlVars().start;
 					if (position > 0) {
@@ -355,7 +356,6 @@
 
 					$('.se-goodblock').each(function () {
 						$(this).prepend("<div class='se-numeration'>" + (position + 1 + $('.se-goodblock').index($(this))) + ".</div>");
-						$('h3 a').attr('target', '_blank');
 					});
 				}
 			};
