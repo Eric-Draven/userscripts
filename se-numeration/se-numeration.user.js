@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3
+// @version 1.3.1
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -304,7 +304,7 @@
 			return;
 		} else {
 			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#bf0000;font-size:17px;font-weight:700;}' +
-						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .popup, .z-default-search, .logo-description{display:none !important;}' +
+						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'.footer .footer__inner{padding:10px !important;}' +
@@ -316,12 +316,15 @@
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}');
 			window.blocks = function () {
-				[].forEach.call(document.getElementsByClassName('content__left'), function (e) {
+				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
 						block = e.querySelectorAll('.serp-item');
+						console.log (block);
 						for (i = 0; i < block.length; i++) {
 							if (block[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
 								block[i].parentNode.removeChild(block[i]);
+							} else {
+								block[i].className += " se-goodblock";
 							}
 						}
 						position = getUrlVars().p;
@@ -330,7 +333,7 @@
 						} else {
 							position = 0;
 						}
-						addPosition('.serp-item');
+						addPosition('.se-goodblock');
 						if (document.getElementsByClassName('head-stripe').length) {
 							document.getElementsByClassName('head-stripe__x')[0].click();
 						}
