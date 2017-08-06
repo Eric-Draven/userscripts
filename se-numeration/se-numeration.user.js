@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3.1
+// @version 1.3.2
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -347,7 +347,7 @@
 
 	function google() {
 		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#bf0000;font-weight:700;}' +
-					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #topstuff, #tvcap, #flun, #lud-dsu, .rgsep, ._Mcf, .serptrends_histwrapper, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
+					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #topstuff, #tvcap, #flun, #lud-dsu, .rgsep, ._Mcf, .serptrends_histwrapper, .appbar, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
 					'.g g-section-with-header{display:block !important;}' +
 					'.g{margin-bottom:12px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
