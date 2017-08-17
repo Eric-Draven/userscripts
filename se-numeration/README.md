@@ -26,10 +26,10 @@
 * Установив скрипт в **Greasemonkey**, **Tampermonkey**, **Violentmonkey** или **MeddleMonkey**, обновления можно будет загружать через интерфейс расширения.
 * Если установлен мой старый скрипт "**Yandex Num (Mod by Eric Draven)**", удалите его.
 * Работоспособность проверена в браузерах:
-  * **Firefox v24-54** ( _Greasemonkey, Tampermonkey_ )
-  * **Chrome v57-59** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
+  * **Firefox v24-55** ( _Greasemonkey, Tampermonkey_ )
+  * **Chrome v57-60** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
   * **Яндекс.Браузер v17** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
-  * **Opera v44-46** ( _Tampermonkey, Violentmonkey_ )
+  * **Opera v44-47** ( _Tampermonkey, Violentmonkey_ )
   * В браузерах **Internet Explorer** и **Opera v12** корректно работать не будет!
 
 ---
