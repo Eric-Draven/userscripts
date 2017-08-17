@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3.2
+// @version 1.3.3
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -347,15 +347,15 @@
 
 	function google() {
 		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#bf0000;font-weight:700;}' +
-					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #topstuff, #tvcap, #flun, #lud-dsu, .rgsep, ._Mcf, .serptrends_histwrapper, .appbar, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
+					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #topstuff, #tvcap, #flun, #kx, #lud-dsu, #bottomads, .rgsep, ._Mcf, .serptrends_histwrapper, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
 					'.g g-section-with-header{display:block !important;}' +
 					'.g{margin-bottom:12px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
 					'.s{max-width:848px !important;}');
 		window.blocks = function () {
-			[].forEach.call(document.querySelectorAll('#center_col'), function (e) {
+			[].forEach.call(document.querySelectorAll('#res'), function (e) {
 				if (e.querySelectorAll('.se-numeration').length === 0) {
-					block = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod');
+					block = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk');
 					for (i = 0; i < block.length; i++) {
 						block[i].parentNode.removeChild(block[i]);
 					}
@@ -375,7 +375,7 @@
 					} else {
 						position = 0;
 					}
-					addPosition('.g');
+					addPosition('#res .g');
 				}
 			});
 		};
