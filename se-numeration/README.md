@@ -31,6 +31,7 @@
   * **Яндекс.Браузер v17** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
   * **Opera v44-47** ( _Tampermonkey, Violentmonkey_ )
   * В браузерах **Internet Explorer** и **Opera v12** корректно работать не будет!
-
+### Пример работы скрипта
+![Example](https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/images/example.gif)
 ---
 > [Все работы автора](https://github.com/Eric-Draven?tab=repositories) / [UserScripts](https://github.com/Eric-Draven/userscripts)
