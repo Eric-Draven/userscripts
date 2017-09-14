@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3.3
+// @version 1.3.4
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -307,6 +307,7 @@
 						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
+						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
 						'.footer .footer__inner{padding:10px !important;}' +
 						'.footer .footer__line{line-height:20px !important;}' +
 						'.misspell__message{color:red;font-weight:700 !important;}' +
@@ -318,10 +319,15 @@
 			window.blocks = function () {
 				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
+						block = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz');
+						for (i = 0; i < block.length; i++) {
+							block[i].parentNode.removeChild(block[i]);
+						}
 						block = e.querySelectorAll('.serp-item');
-						console.log (block);
 						for (i = 0; i < block.length; i++) {
 							if (block[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
+								block[i].parentNode.removeChild(block[i]);
+							} else if (block[i].querySelectorAll('.composite').length !== 0) {
 								block[i].parentNode.removeChild(block[i]);
 							} else {
 								block[i].className += " se-goodblock";
@@ -334,9 +340,6 @@
 							position = 0;
 						}
 						addPosition('.se-goodblock');
-						if (document.getElementsByClassName('head-stripe').length) {
-							document.getElementsByClassName('head-stripe__x')[0].click();
-						}
 					}
 				});
 			};
