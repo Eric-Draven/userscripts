@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3.5
+// @version 1.3.6
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -349,6 +349,7 @@
 	}
 
 	function google() {
+		console.time('111');
 		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#bf0000;font-weight:700;}' +
 					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #tvcap, #flun, #kx, #lud-dsu, #bottomads, .rgsep, ._Mcf, .serptrends_histwrapper, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
 					'.g g-section-with-header{display:block !important;}' +
@@ -358,13 +359,13 @@
 		window.blocks = function () {
 			[].forEach.call(document.querySelectorAll('#res'), function (e) {
 				if (e.querySelectorAll('.se-numeration').length === 0) {
-					block = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .mod .g');
+					block = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g');
 					for (i = 0; i < block.length; i++) {
 						block[i].parentNode.removeChild(block[i]);
 					}
 					block = e.querySelectorAll('.g');
 					for (i = 0; i < block.length; i++) {
-						if (block[i].querySelectorAll('.rc .s').length === 0 && block[i].querySelectorAll('.r').length !== 0) {
+						if (block[i].querySelectorAll('*').length === 0 || block[i].querySelectorAll('.rc .s').length === 0 && block[i].querySelectorAll('.r').length !== 0) {
 							block[i].parentNode.removeChild(block[i]);
 						}
 					}
@@ -384,11 +385,12 @@
 		};
 		window.addEventListener('DOMNodeInserted', blocks, false);
 		blocks();
+		console.timeEnd('111');
 	}
 
 	function mail() {
 		GM_addStyle('.se-numeration{float:left;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
-					'.js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro{display:none !important;}' +
+					'.js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
 					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
@@ -414,7 +416,7 @@
 					addPosition('.result__li');
 				}
 			});
-			block = document.querySelectorAll('#js-bottomBlock > div');
+			block = document.querySelectorAll('.a101117d-block, #js-bottomBlock > div');
 			for (i = 0; i < block.length; i++) {
 				block[i].parentNode.removeChild(block[i]);
 			}
