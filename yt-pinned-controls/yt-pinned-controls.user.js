@@ -2,14 +2,14 @@
 // @name YouTube Pinned Controls
 // @namespace yt-pinned-controls
 // @description Отключение автоматического скрытия контрольной панели просматриваемого ролика на YouTube. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.0
+// @version 1.0.1
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/yt-pinned-controls/yt-pinned-controls.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/yt-pinned-controls/yt-pinned-controls.user.js
 // @homepageURL https://github.com/Eric-Draven/userscripts/tree/master/yt-pinned-controls
 // @include https://www.youtube.com/*
 // @match https://www.youtube.com/*
-// @grant GM_addStyle
+// @grant none
 // ==/UserScript==
 
 (function () {
@@ -30,6 +30,18 @@
 		}
 	};
 	document.onreadystatechange = window.handleState;
+
+	function GM_addStyle(css) {
+		let head = document.getElementsByTagName('head')[0];
+		if (head) {
+			let style = document.createElement('style');
+			style.setAttribute('type', 'text/css');
+			style.textContent = css;
+			head.appendChild(style);
+			return style;
+		}
+		return null;
+	}
 
 	function onStyle() {
 		GM_addStyle('.ytp-autohide .ytp-chrome-top, .ytp-autohide .ytp-chrome-bottom, .ytp-chrome-top[aria-hidden="true"], .ytp-chrome-bottom[aria-hidden="true"],' +
