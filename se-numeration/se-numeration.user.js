@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.3.7
+// @version 1.4
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -267,7 +267,7 @@
 // @match *://www.google.com/*
 // @match *://encrypted.google.com/*
 // @exclude ftp://*/*
-// @grant GM_addStyle
+// @grant none
 // ==/UserScript==
 
 (function () {
@@ -276,6 +276,18 @@
 		block,
 		position,
 		domain = window.top.location.hostname;
+
+	function GM_addStyle(css) {
+		let head = document.getElementsByTagName('head')[0];
+		if (head) {
+			let style = document.createElement('style');
+			style.setAttribute('type', 'text/css');
+			style.textContent = css;
+			head.appendChild(style);
+			return style;
+		}
+		return null;
+	}
 
 	function getUrlVars() {
 		var vars = {};
@@ -289,13 +301,14 @@
 		[].forEach.call(document.querySelectorAll(addTo), function (e) {
 			let div = document.createElement('div');
 			div.setAttribute('class', 'se-numeration');
-			div.innerHTML = (position + 1) + '.';
+			div.textContent = (position + 1) + '.';
 			e.insertBefore(div, e.firstChild);
 			position++;
 		});
 	}
 
 	function yandex() {
+		console.time('111');
 		if (window.top.location.href.indexOf('/tune/geo') >= 0) {
 			GM_addStyle('.geo-map{display:none !important;}');
 			document.getElementById('city__front-input').select();
@@ -304,7 +317,7 @@
 			return;
 		} else {
 			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#bf0000;font-size:17px;font-weight:700;}' +
-						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description{display:none !important;}' +
+						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
@@ -319,7 +332,7 @@
 			window.blocks = function () {
 				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
-						block = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz');
+						block = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 						for (i = 0; i < block.length; i++) {
 							block[i].parentNode.removeChild(block[i]);
 						}
@@ -346,10 +359,10 @@
 		}
 		window.addEventListener('DOMNodeInserted', blocks, false);
 		blocks();
+		console.timeEnd('111');
 	}
 
 	function google() {
-		console.time('111');
 		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#bf0000;font-weight:700;}' +
 					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #tvcap, #flun, #kx, #lud-dsu, #bottomads, .rgsep, ._Mcf, .serptrends_histwrapper, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
 					'.g g-section-with-header{display:block !important;}' +
@@ -385,7 +398,6 @@
 		};
 		window.addEventListener('DOMNodeInserted', blocks, false);
 		blocks();
-		console.timeEnd('111');
 	}
 
 	function mail() {
