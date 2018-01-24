@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.4
+// @version 1.4.1
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -332,7 +332,7 @@
 			window.blocks = function () {
 				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
-						block = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
+						block = e.querySelectorAll('.serp-adv-item, .head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 						for (i = 0; i < block.length; i++) {
 							block[i].parentNode.removeChild(block[i]);
 						}
@@ -438,23 +438,21 @@
 	}
 
 	function rambler() {
-		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:21px;font-size:18px;color:#bf0000;font-weight:700;}' +
+		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:25px;font-size:18px;color:#bf0000;font-weight:500;}' +
 					'.ad, .mixednews, #recommendations, .l-aside, .b-advertising, .b-context, .b-hints, .b-informers, .b-mixin, .b-podmes_images, .b-provider, .b-right-column, .b-footer__promo, .head-stripe__x, .b-widgets{display:none !important;}' +
-					'.b-paging{padding-top:10px;}' +
 					'.l-header{margin:0;}' +
 					'.b-header__search{margin:200px 0 400px 0;}' +
-					'.b-settings{margin-bottom:-118px;}' +
-					'.b-serp-item__info{color:#006400;font-size:14px;}' +
-					'.l-main{width:90%;padding:20px 0 !important;}' +
-					'.b-serp-item{max-width:90%;padding-bottom:6px !important;}' +
-					'.b-footer, .b-footer__content{height:auto;line-height:30px;}' +
+					'.b-paging{margin-top:15px;}' +
+					'.l-page__height-filler{margin-bottom:15px;}' +
+					'.b-serp-item__title{margin:0;}' +
+					'.b-serp-item__info{margin:0;color:#006400;font-size:14px;}' +
+					'.b-serp-item{margin-bottom:6px !important;}' +
 					'.l-wrapper{margin-bottom:0;}' +
 					'.l-wrapper::after{height:auto;}' +
-					'.l-content{padding:0;}' +
 					'.b-serp-item__favicon{margin-left:-8px;}' +
 					'.b-serp-item__header{padding-bottom:0;}');
 		window.blocks = function () {
-			[].forEach.call(document.getElementsByClassName('l-main'), function (e) {
+			[].forEach.call(document.getElementsByClassName('l-main-col'), function (e) {
 				if (e.querySelectorAll('.se-numeration').length === 0) {
 					position = getUrlVars().page;
 					if (position > 0) {
