@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.4.1
+// @version 1.4.2
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -308,7 +308,6 @@
 	}
 
 	function yandex() {
-		console.time('111');
 		if (window.top.location.href.indexOf('/tune/geo') >= 0) {
 			GM_addStyle('.geo-map{display:none !important;}');
 			document.getElementById('city__front-input').select();
@@ -328,11 +327,12 @@
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
-						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}');
+						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}' +
+						'.serp-item h2{-webkit-margin-before:0 !important;-webkit-margin-after:0 !important;}');
 			window.blocks = function () {
 				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
-						block = e.querySelectorAll('.serp-adv-item, .head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
+						block = e.querySelectorAll('.distr-default-search, .serp-adv-item, .head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 						for (i = 0; i < block.length; i++) {
 							block[i].parentNode.removeChild(block[i]);
 						}
@@ -340,7 +340,7 @@
 						for (i = 0; i < block.length; i++) {
 							if (block[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
 								block[i].parentNode.removeChild(block[i]);
-							} else if (block[i].querySelectorAll('.composite').length !== 0) {
+							} else if (block[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length !== 0) {
 								block[i].parentNode.removeChild(block[i]);
 							} else {
 								block[i].className += " se-goodblock";
@@ -359,7 +359,6 @@
 		}
 		window.addEventListener('DOMNodeInserted', blocks, false);
 		blocks();
-		console.timeEnd('111');
 	}
 
 	function google() {
@@ -401,8 +400,8 @@
 	}
 
 	function mail() {
-		GM_addStyle('.se-numeration{float:left;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
-					'.js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
+		GM_addStyle('.se-numeration{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
+					'#amigoTopBn, #tb-29505625, #layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
 					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
@@ -411,7 +410,8 @@
 					'.result__microdata_video__img, .result__person__img{margin-right:15px;}' +
 					'.layout_two-coll .layout-content__wrapper{margin-right:0;}' +
 					'.responses{max-width:800px;width:800px;}' +
-					'.rightcol .layout-content__wrapper{border-right:none;width:800px;}');
+					'.rightcol .layout-content__wrapper{border-right:none;width:800px;}' +
+					'.snippet-sitelinks{margin-left:30px;}');
 		window.blocks = function () {
 			[].forEach.call(document.querySelectorAll('#js-result'), function (e) {
 				if (e.querySelectorAll('.se-numeration').length === 0) {
