@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.4.1
+// @version 1.4.2
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -401,7 +401,7 @@
 
 	function mail() {
 		GM_addStyle('.se-numeration{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
-					'#amigoTopBn, #tb-29505625, #layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
+					'#amigoTopBn, #tb-29505625, #tb-27379245, #layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
 					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
