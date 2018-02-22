@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.4.2
+// @version 1.4.3a
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -316,7 +316,7 @@
 			return;
 		} else {
 			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#bf0000;font-size:17px;font-weight:700;}' +
-						'.distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content{display:none !important;}' +
+						'.se-badblock, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
@@ -327,8 +327,7 @@
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
-						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}' +
-						'.serp-item h2{-webkit-margin-before:0 !important;-webkit-margin-after:0 !important;}');
+						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}');
 			window.blocks = function () {
 				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
@@ -339,16 +338,16 @@
 						block = e.querySelectorAll('.serp-item');
 						for (i = 0; i < block.length; i++) {
 							if (block[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
-								block[i].parentNode.removeChild(block[i]);
+								block[i].className += " se-badblock";
 							} else if (block[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length !== 0) {
-								block[i].parentNode.removeChild(block[i]);
+								block[i].className += " se-badblock";
 							} else {
 								block[i].className += " se-goodblock";
 							}
 						}
 						position = getUrlVars().p;
 						if (position > 0) {
-							position = position * e.querySelectorAll('.serp-item').length;
+							position = position * e.querySelectorAll('.se-goodblock').length;
 						} else {
 							position = 0;
 						}
@@ -401,7 +400,7 @@
 
 	function mail() {
 		GM_addStyle('.se-numeration{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
-					'#amigoTopBn, #tb-29505625, #tb-27379245, #layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
+					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
 					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
@@ -428,7 +427,7 @@
 					addPosition('.result__li');
 				}
 			});
-			block = document.querySelectorAll('#js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
+			block = document.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
 			for (i = 0; i < block.length; i++) {
 				block[i].parentNode.removeChild(block[i]);
 			}
