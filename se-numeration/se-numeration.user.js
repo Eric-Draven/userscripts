@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.4.3
+// @version 1.5a
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -307,33 +307,59 @@
 		});
 	}
 
+	function ifCacheCleared() {
+		if (sessionStorage.getItem('checkboxStatus') === null){
+			GM_addStyle('.se-serp-adv-item{display:none !important;}');
+			sessionStorage.setItem('checkboxStatus', 'se-off');
+		}
+	}
+
 	function yandex() {
 		if (window.top.location.href.indexOf('/tune/geo') >= 0) {
 			GM_addStyle('.geo-map{display:none !important;}');
 			document.getElementById('city__front-input').select();
-		}
-		else if (window.top.location.href.indexOf('/images/') >= 0) {
-			return;
-		} else {
-			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#bf0000;font-size:17px;font-weight:700;}' +
+		} else if (window.top.location.href.indexOf('/search/?') >= 0) {
+			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#c03;font-size:17px;font-weight:700;}' +
 						'.se-badblock, .distr-default-search, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
 						'.footer .footer__inner{padding:10px !important;}' +
 						'.footer .footer__line{line-height:20px !important;}' +
-						'.misspell__message{color:red;font-weight:700 !important;}' +
-						'.region-change__link, .region-change__link:visited, .document__provider-name{color:red !important;}' +
+						'.misspell__message{color:#c03;font-weight:700 !important;}' +
+						'.region-change__link, .region-change__link:visited, .document__provider-name{color:#c03 !important;}' +
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
-						'.misspell, .serp-item, .pager{margin-bottom:12px !important;}');
+						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
+						'.label.label_color_yellow{background-color:#ff9 !important;}' +
+						'.se-button-bar{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
+						'.se-checkbox{padding:0 8px;color:#999;}' +
+						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:16px;padding-right:2px;overflow:hidden;vertical-align:middle;}' +
+						'.se-checkbox-on-off input[type=checkbox]{position:absolute;margin:0;width:37px;height:15px;opacity:0;cursor:pointer;}' +
+						'.se-checkbox-on-off input[type=checkbox]:checked+label{background-color:#090;}' +
+						'.se-checkbox-on-off label>*{display:inline-block;height:100%;vertical-align:top;-moz-transition:width.1s;-webkit-transition:width.1s;transition:width.1s;}' +
+						'.se-checkbox-on-off label{display:inline-block;border:1px solid transparent;height:13px;width:100%;background-color:#999;border-radius:20px;}' +
+						'.se-checkbox-on-off .checked{text-align:center;line-height:13px;}' +
+						'.se-checkbox-on-off .checked, .se-checkbox-on-off input[type=checkbox]:checked+label .unchecked{width:0;}' +
+						'.se-checkbox-on-off .toggle{background-color:#fff;width:13px;border-radius:13px;}' +
+						'.se-checkbox-on-off .unchecked, .se-checkbox-on-off input[type=checkbox]:checked+label .checked{width:22px;}');
+			if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
+				GM_addStyle('.se-serp-adv-item{display:block !important;}');
+			} else {
+				GM_addStyle('.se-serp-adv-item{display:none !important;}');
+			}
+
 			window.blocks = function () {
-				[].forEach.call(document.getElementsByClassName('main__content'), function (e) {
+				[].forEach.call(document.getElementsByClassName('content__left'), function (e) {
 					if (e.querySelectorAll('.se-numeration').length === 0) {
-						block = e.querySelectorAll('.serp-adv-item, .head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
+						block = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 						for (i = 0; i < block.length; i++) {
 							block[i].parentNode.removeChild(block[i]);
+						}
+						block = e.querySelectorAll('.serp-adv-item');
+						for (i = 0; i < block.length; i++) {
+							block[i].className = "se-serp-adv-item serp-adv-item";
 						}
 						block = e.querySelectorAll('.serp-item');
 						for (i = 0; i < block.length; i++) {
@@ -352,16 +378,59 @@
 							position = 0;
 						}
 						addPosition('.se-goodblock');
+						ifCacheCleared();
 					}
 				});
+
+				if (document.querySelectorAll('.se-button-bar').length === 0) {
+					let checkboxStatus,
+						checkboxClass,
+						panel = document.createElement('div'),
+						getParent = document.getElementsByClassName('navigation__region')[0];
+					if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
+						checkboxStatus = 'checked=""';
+						checkboxClass = 'se-on';
+					} else {
+						checkboxStatus = '';
+						checkboxClass = 'se-off';
+					}
+					panel.setAttribute('class', 'se-button-bar');
+					panel.innerHTML = '<div class="se-checkbox">Яндекс.Директ: ' +
+						'<span class="se-checkbox-on-off">' +
+						'<input id="se-checkbox-on-off" class="' + checkboxClass + '" ' + checkboxStatus + 'type="checkbox">' +
+						'<label>' +
+						'<span class="checked"></span>' +
+						'<span class="toggle"></span>' +
+						'<span class="unchecked"></span>' +
+						'</label>' +
+						'</span>' +
+						' (' + document.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
+					getParent.appendChild(panel);
+					getParent.insertBefore(panel, getParent.lastChild);
+					let onOff = document.getElementById('se-checkbox-on-off'),
+						obj = {
+							handleEvent: function() {
+								if (onOff.className.indexOf('se-off') === -1) {
+									GM_addStyle('.se-serp-adv-item{display:none !important;}');
+									onOff.className = ('se-off');
+									sessionStorage.setItem('checkboxStatus', 'se-off');
+								} else {
+									GM_addStyle('.se-serp-adv-item{display:block !important;}');
+									onOff.className = ('se-on');
+									sessionStorage.setItem('checkboxStatus', 'se-on');
+								}
+							}
+						};
+					onOff.addEventListener("click", obj, false);
+				}
 			};
+			window.addEventListener('DOMNodeInserted', blocks, false);
+			blocks();
 		}
-		window.addEventListener('DOMNodeInserted', blocks, false);
-		blocks();
 	}
 
 	function google() {
-		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#bf0000;font-weight:700;}' +
+		GM_addStyle('.se-numeration{float:left;font-size:17px;margin-left:-40px;color:#c03;font-weight:700;}' +
 					'#tads, #tadsb, #rhs, #newsbox, #imagebox_bigimages, #extrares, #lclbox, #tvcap, #flun, #kx, #lud-dsu, #bottomads, .rgsep, ._Mcf, .serptrends_histwrapper, .no-sep, .tpo, .kappbar, .vk_c, g-section-with-header, g-scrolling-carousel{display:none !important;}' +
 					'.g g-section-with-header{display:block !important;}' +
 					'.g{margin-bottom:15px !important;}' +
@@ -399,7 +468,7 @@
 	}
 
 	function mail() {
-		GM_addStyle('.se-numeration{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#bf0000;font-weight:700;}' +
+		GM_addStyle('.se-numeration{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#c03;font-weight:700;}' +
 					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
@@ -437,7 +506,7 @@
 	}
 
 	function rambler() {
-		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:25px;font-size:18px;color:#bf0000;font-weight:500;}' +
+		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:25px;font-size:18px;color:#c03;font-weight:500;}' +
 					'.ad, .mixednews, #recommendations, .l-aside, .b-advertising, .b-context, .b-hints, .b-informers, .b-mixin, .b-podmes_images, .b-provider, .b-right-column, .b-footer__promo, .head-stripe__x, .b-widgets{display:none !important;}' +
 					'.l-header{margin:0;}' +
 					'.b-header__search{margin:200px 0 400px 0;}' +
@@ -468,7 +537,7 @@
 	}
 
 	function yahoo() {
-		GM_addStyle('.se-numeration{float:left;font-size:18px;line-height:15px;margin:3px 12px 56px 0;color:#bf0000;font-weight:700;}' +
+		GM_addStyle('.se-numeration{float:left;font-size:18px;line-height:15px;margin:3px 12px 56px 0;color:#c03;font-weight:700;}' +
 					'#right, #appFinance, #browserExtensionPromotion, .searchCenterBottomAds, .searchCenterFooter, .appMathCalculator, .f5110t0q65, .dd{display:none !important;}' +
 					'.assist, .wrapstar, .algo, .pagination{display:block !important;}' +
 					'.sc, #results #main #web .singlecol.sc.tt.twc, .dd, #results #web .dd, .ddgrp .dd, #results #web .ddgrp .dd, .searchCenterBottom{margin-top:0 !important;}' +
@@ -493,7 +562,7 @@
 	}
 
 	function bing() {
-		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:24px;font-size:20px;color:#bf0000;font-family:"Segoe UI";font-weight:500;}' +
+		GM_addStyle('.se-numeration{float:left;margin-right:8px;line-height:24px;font-size:20px;color:#c03;font-family:"Segoe UI";font-weight:500;}' +
 					'.b_ad, .b_ad, .b_ans{display:none !important;}' +
 					'#b_results{width:700px;}' +
 					'#b_content{padding:0 0 0 100px;}' +
@@ -511,7 +580,7 @@
 	}
 
 	function sputnik() {
-		GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 0;color:#bf0000;font-size:17px;font-weight:700;}' +
+		GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 0;color:#c03;font-size:17px;font-weight:700;}' +
 					'.b-widgets, .b-content-right, .b-teaser, .js-panel{display:none !important;}' +
 					'.b-head{height:500px;}' +
 					'.b-fon{margin-top:100px;}' +
