@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5a
+// @version 1.5a1
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -315,10 +315,15 @@
 	}
 
 	function yandex() {
-		if (window.top.location.href.indexOf('/tune/geo') >= 0) {
+		let href = window.top.location.href;
+		if (href.indexOf('/tune/geo') >= 0) {
 			GM_addStyle('.geo-map{display:none !important;}');
 			document.getElementById('city__front-input').select();
-		} else if (window.top.location.href.indexOf('/search/?') >= 0) {
+		} else if (href.indexOf('//news.yandex.') >= 0) {
+			GM_addStyle('.sticky_visible, .proffit_visible{display:none !important;}' +
+						'.story-item__title{font-size:18px !important;}' +
+						'.document__provider-name{color:#c03 !important;}');
+		} else if (href.indexOf('/search/?') || href.indexOf('/yandsearch?') >= 0) {
 			GM_addStyle('.se-numeration{float:left;line-height:normal;margin:2px 8px 0 8px;color:#c03;font-size:17px;font-weight:700;}' +
 						'.se-badblock, .distr-default-search, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
@@ -327,7 +332,7 @@
 						'.footer .footer__inner{padding:10px !important;}' +
 						'.footer .footer__line{line-height:20px !important;}' +
 						'.misspell__message{color:#c03;font-weight:700 !important;}' +
-						'.region-change__link, .region-change__link:visited, .document__provider-name{color:#c03 !important;}' +
+						'.region-change__link, .region-change__link:visited{color:#c03 !important;}' +
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
