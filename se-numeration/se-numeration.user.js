@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5a3
+// @version 1.5a4
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -394,11 +394,10 @@
 				});
 
 				if (document.querySelectorAll('.se-button-bar').length === 0) {
-					let ss = sessionStorage.getItem('checkboxStatus'),
-						checkboxStatus = '',
+					let checkboxStatus = '',
 						panel = document.createElement('div'),
 						getParent = document.querySelectorAll('.navigation__region')[0];
-					if (ss === 'se-on'){
+					if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
 						checkboxStatus = 'checked="" ';
 					}
 					panel.setAttribute('class', 'se-button-bar');
@@ -417,7 +416,7 @@
 					let onOff = document.getElementById('se-checkbox-on-off'),
 						obj = {
 							handleEvent: function() {
-								if (ss === 'se-on') {
+								if (sessionStorage.getItem('checkboxStatus') === 'se-on') {
 									GM_addStyle('.se-serp-adv-item{display:none !important;}');
 									sessionStorage.setItem('checkboxStatus', 'se-off');
 								} else {
