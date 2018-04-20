@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5a4
+// @version 1.5a5
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -349,6 +349,7 @@
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
+						'.serp-item .wrapper{display:block !important;}' +
 						'.wrapper__cell{display:contents !important;}' +
 						'.wrapper__cell_type_content{max-width:100% !important;}' +
 						'.label.label_color_yellow{background-color:#ff9 !important;}' +
@@ -357,7 +358,7 @@
 						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:16px;padding-right:2px;overflow:hidden;vertical-align:middle;}' +
 						'.se-checkbox-on-off input[type=checkbox]{position:absolute;margin:0;width:37px;height:15px;opacity:0;cursor:pointer;}' +
 						'.se-checkbox-on-off input[type=checkbox]:checked+label{background-color:#090;}' +
-						'.se-checkbox-on-off label>*{display:inline-block;height:100%;vertical-align:top;-moz-transition:width.1s;-webkit-transition:width.1s;transition:width.1s;}' +
+						'.se-checkbox-on-off label>*{display:inline-block;height:100%;vertical-align:top;-moz-transition:width.1s;-webkit-transition:width.1s;transition:width.1s;-webkit-transition:all 0.3s ease 0s;transition:all 0.3s ease 0s;}' +
 						'.se-checkbox-on-off label{display:inline-block;border:1px solid transparent;height:13px;width:100%;background-color:#999;border-radius:20px;}' +
 						'.se-checkbox-on-off .checked{text-align:center;line-height:13px;}' +
 						'.se-checkbox-on-off .checked, .se-checkbox-on-off input[type=checkbox]:checked+label .unchecked{width:0;}' +
@@ -401,7 +402,7 @@
 						checkboxStatus = 'checked="" ';
 					}
 					panel.setAttribute('class', 'se-button-bar');
-					panel.innerHTML = '<div class="se-checkbox">Яндекс.Директ: ' +
+					panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
 						'<span class="se-checkbox-on-off">' +
 						'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
 						'<label>' +
