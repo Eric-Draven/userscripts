@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5a6
+// @version 1.5a7
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -350,8 +350,7 @@
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
 						'.serp-item .wrapper{display:block !important;}' +
-						'.wrapper__cell{display:contents !important;}' +
-						'.wrapper__cell_type_content{width:100% !important;max-width:100% !important;}' +
+						'.wrapper__cell_type_content{display:contents !important;width:100% !important;max-width:100% !important;padding-top:0 !important}' +
 						'.label.label_color_yellow{background-color:#ff9 !important;}' +
 						'.se-button-bar{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
 						'.se-checkbox{padding:0 8px;color:#999;}' +
@@ -369,7 +368,7 @@
 					if (e.querySelectorAll('.se-num').length === 0) {
 						node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 						pNrC(node);
-						node = e.querySelectorAll('.serp-adv-item');
+						node = e.querySelectorAll('.serp-adv-item, .serp-item .organic__subtitle span style');
 						for (i = 0; i < node.length; i++) {
 							node[i].className = "se-serp-adv-item serp-adv-item";
 						}
