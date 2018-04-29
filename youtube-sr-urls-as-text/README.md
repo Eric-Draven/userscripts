@@ -1,13 +1,13 @@
 # YouTube Search Results URLs as Text ( UserScript )
 Дополнение поисковой выдачи "YouTube" ссылками (в виде текста) на: **видео**, **плейлисты**, **каналы**, **пользователей**.
 
-[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/youtube-sr-urls-as-text/youtube-sr-urls-as-text.user.js) "**YouTube Search Results URLs as Text**" ( **v1.0.4** от **12.12.2017** )
+[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/youtube-sr-urls-as-text/youtube-sr-urls-as-text.user.js) "**YouTube Search Results URLs as Text**" ( **v1.0.5** от **29.04.2018** )
 
 # YouTube Search Results Video URL as Text ( UserScript )
 Дополнение поисковой выдачи YouTube ссылкой (в виде текста) на **видео ролик**.  
 > _Это всего лишь упрощённая версия скрипта "**YouTube Search Results URLs as Text**", поэтому используйте только один из этих скриптов, иначе они будут дублировать часть функций друг друга._
 
-[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/youtube-sr-urls-as-text/youtube-sr-video-url-as-text.user.js) "**YouTube Search Results Video URL as Text**" ( **v1.0.2** от **12.12.2017** )
+[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/youtube-sr-urls-as-text/youtube-sr-video-url-as-text.user.js) "**YouTube Search Results Video URL as Text**" ( **v1.0.3** от **29.04.2018** )
 
 ## Описание
 Сервис "YouTube" на страницах своей поисковой выдачи не показывает в виде текста ссылки на: **видео ролики**, **плейлисты**, **каналы**, **страницы пользователей**. А зачем? Кому вообще может понадобиться такая информация? Чтобы ответить на эти вопросы, нужно хорошо подумать, но явно не пользователям системы "**Userator**", которым в общем-то и объяснять не нужно, какую пользу несёт в себе данный скрипт. Но всё же, хотя бы для новичков системы стоит объяснить, что, установив этот скрипт, Вы сможете на странице результатов поиска и в некоторых разделах "YouTube" видеть вышеупомянутые ссылки в виде обычного текста и, что самое важное, искать нужную ссылку с помощью функции браузера "**Найти на странице**". Никаких других действий скрипт не выполняет!
