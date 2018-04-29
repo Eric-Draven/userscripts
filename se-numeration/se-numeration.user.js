@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5a7
+// @version 1.5b1
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -29,8 +29,6 @@
 // @include *://news.yandex.com/*
 // @include *://news.yandex.com.tr/*
 // @include *://go.mail.ru/*
-// @include *://rambler.ru/*
-// @include *://www.rambler.ru/*
 // @include *://nova.rambler.ru/*
 // @include *://search.yahoo.com/*
 // @include *://bing.com/*
@@ -62,8 +60,6 @@
 // @match *://news.yandex.com/*
 // @match *://news.yandex.com.tr/*
 // @match *://go.mail.ru/*
-// @match *://rambler.ru/*
-// @match *://www.rambler.ru/*
 // @match *://nova.rambler.ru/*
 // @match *://search.yahoo.com/*
 // @match *://bing.com/*
@@ -275,7 +271,7 @@
 	let i,
 		node,
 		position,
-		domain = window.top.location.hostname;
+		curLoc = window.top.location;
 
 	function GM_addStyle(css) {
 		let head = document.getElementsByTagName('head')[0];
@@ -303,7 +299,6 @@
 		}
 	}
 
-
 	function addPosition(addTo) {
 		[].forEach.call(document.querySelectorAll(addTo), function (e) {
 			let div = document.createElement('div');
@@ -326,16 +321,81 @@
 		}
 	}
 
+	function yandex_loop() {
+		[].forEach.call(document.querySelectorAll('.content__left'), function (e) {
+			if (e.querySelectorAll('.serp-item').length !== 0 && e.querySelectorAll('.se-num').length === 0) {
+				node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
+				pNrC(node);
+				node = e.querySelectorAll('.serp-adv-item, .serp-item .organic__subtitle span style');
+				for (i = 0; i < node.length; i++) {
+					node[i].className = "se-serp-adv-item serp-adv-item";
+				}
+				node = e.querySelectorAll('.serp-item');
+				for (i = 0; i < node.length; i++) {
+					if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
+						node[i].className += " se-badnode";
+					} else if (node[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length !== 0) {
+						node[i].className += " se-badnode";
+					} else {
+						node[i].className += " se-goodnode";
+					}
+				}
+				position = getUrlVars().p;
+				if (position > 0) {
+					position = position * e.querySelectorAll('.se-goodnode').length;
+				} else {
+					position = 0;
+				}
+				addPosition('.se-goodnode');
+				ifCacheCleared();
+			}
+		});
+
+		if (document.querySelectorAll('.se-button-bar').length === 0) {
+			let checkboxStatus = '',
+				panel = document.createElement('div'),
+				getParent = document.querySelectorAll('.navigation__region')[0];
+			if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
+				checkboxStatus = 'checked="" ';
+			}
+			panel.setAttribute('class', 'se-button-bar');
+			panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
+				'<span class="se-checkbox-on-off">' +
+				'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
+				'<label>' +
+				'<span class="checked"></span>' +
+				'<span class="toggle"></span>' +
+				'<span class="unchecked"></span>' +
+				'</label>' +
+				'</span>' +
+				' (' + document.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
+			getParent.appendChild(panel);
+			getParent.insertBefore(panel, getParent.lastChild);
+			let onOff = document.getElementById('se-checkbox-on-off'),
+				obj = {
+					handleEvent: function() {
+						if (sessionStorage.getItem('checkboxStatus') === 'se-on') {
+							GM_addStyle('.se-serp-adv-item{display:none !important;}');
+							sessionStorage.setItem('checkboxStatus', 'se-off');
+						} else {
+							GM_addStyle('.se-serp-adv-item{display:block !important;}');
+							sessionStorage.setItem('checkboxStatus', 'se-on');
+						}
+					}
+				};
+			onOff.addEventListener("click", obj, false);
+		}
+	}
+
 	function yandex() {
-		let href = window.top.location.href;
-		if (href.indexOf('/tune/geo') >= 0) {
+		if (curLoc.pathname.indexOf('/tune/geo/') >= 0) {
 			GM_addStyle('.geo-map{display:none !important;}');
 			document.getElementById('city__front-input').select();
-		} else if (href.indexOf('//news.yandex.') >= 0) {
+		} else if (curLoc.hostname.indexOf('news.yandex.') >= 0) {
 			GM_addStyle('.sticky_visible, .proffit_visible{display:none !important;}' +
 						'.story-item__title{font-size:18px !important;}' +
 						'.document__provider-name{color:#c03 !important;}');
-		} else if (href.indexOf('/search/?') || href.indexOf('/yandsearch?') >= 0) {
+		} else if (curLoc.pathname.indexOf('/search/') >= 0 || curLoc.pathname.indexOf('/yandsearch') >= 0) {
 			GM_addStyle('.se-num{float:left;line-height:normal;margin:2px 8px 0 8px;color:#c03;font-size:17px;font-weight:700;}' +
 						'.se-badnode, .distr-default-search, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content, .wrapper__cell_type_thumb .grid__col{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
@@ -363,73 +423,38 @@
 						'.se-checkbox-on-off .checked, .se-checkbox-on-off input[type=checkbox]:checked+label .unchecked{width:0;}' +
 						'.se-checkbox-on-off .toggle{background-color:#fff;width:13px;border-radius:13px;}' +
 						'.se-checkbox-on-off .unchecked, .se-checkbox-on-off input[type=checkbox]:checked+label .checked{width:22px;}');
-			window.loop = function () {
-				[].forEach.call(document.querySelectorAll('.content__left'), function (e) {
-					if (e.querySelectorAll('.se-num').length === 0) {
-						node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
-						pNrC(node);
-						node = e.querySelectorAll('.serp-adv-item, .serp-item .organic__subtitle span style');
-						for (i = 0; i < node.length; i++) {
-							node[i].className = "se-serp-adv-item serp-adv-item";
-						}
-						node = e.querySelectorAll('.serp-item');
-						for (i = 0; i < node.length; i++) {
-							if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
-								node[i].className += " se-badnode";
-							} else if (node[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length !== 0) {
-								node[i].className += " se-badnode";
-							} else {
-								node[i].className += " se-goodnode";
-							}
-						}
-						position = getUrlVars().p;
-						if (position > 0) {
-							position = position * e.querySelectorAll('.se-goodnode').length;
-						} else {
-							position = 0;
-						}
-						addPosition('.se-goodnode');
-						ifCacheCleared();
-					}
-				});
+			window.addEventListener('DOMNodeInserted', yandex_loop, false);
+		}
+	}
 
-				if (document.querySelectorAll('.se-button-bar').length === 0) {
-					let checkboxStatus = '',
-						panel = document.createElement('div'),
-						getParent = document.querySelectorAll('.navigation__region')[0];
-					if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
-						checkboxStatus = 'checked="" ';
+	function google_loop() {
+		if (document.querySelectorAll('.mw #rcnt').length !== 0) {
+			[].forEach.call(document.querySelectorAll('#res'), function (e) {
+				if (e.querySelectorAll('.se-num').length === 0) {
+					node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
+					pNrC(node);
+					node = e.querySelectorAll('.g');
+					for (i = 0; i < node.length; i++) {
+						if (node[i].querySelectorAll('*').length === 0 ||
+							node[i].querySelectorAll('.rc .s').length === 0 &&
+							node[i].querySelectorAll('.r').length !== 0 &&
+							node[i].querySelectorAll('.ts').length === 0) {
+							node[i].parentNode.removeChild(node[i]);
+						}
 					}
-					panel.setAttribute('class', 'se-button-bar');
-					panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
-						'<span class="se-checkbox-on-off">' +
-						'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
-						'<label>' +
-						'<span class="checked"></span>' +
-						'<span class="toggle"></span>' +
-						'<span class="unchecked"></span>' +
-						'</label>' +
-						'</span>' +
-						' (' + document.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
-					getParent.appendChild(panel);
-					getParent.insertBefore(panel, getParent.lastChild);
-					let onOff = document.getElementById('se-checkbox-on-off'),
-						obj = {
-							handleEvent: function() {
-								if (sessionStorage.getItem('checkboxStatus') === 'se-on') {
-									GM_addStyle('.se-serp-adv-item{display:none !important;}');
-									sessionStorage.setItem('checkboxStatus', 'se-off');
-								} else {
-									GM_addStyle('.se-serp-adv-item{display:block !important;}');
-									sessionStorage.setItem('checkboxStatus', 'se-on');
-								}
-							}
-						};
-					onOff.addEventListener("click", obj, false);
+					node = e.querySelectorAll('.g h3 a');
+					for (i = 0; i < node.length; i++) {
+						node[i].setAttribute('target', '_blank');
+					}
+					position = getUrlVars().start;
+					if (position > 0) {
+						position = --position + 1;
+					} else {
+						position = 0;
+					}
+					addPosition('#res .g');
 				}
-			};
-			window.addEventListener('DOMNodeInserted', loop, false);
-			loop();
+			});
 		}
 	}
 
@@ -440,35 +465,25 @@
 					'.g{margin-bottom:15px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
 					'.s{max-width:848px !important;}');
-		window.loop = function () {
-			if (document.querySelectorAll('.mw #rcnt').length !== 0) {
-				[].forEach.call(document.querySelectorAll('#res'), function (e) {
-					if (e.querySelectorAll('.se-num').length === 0) {
-						node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
-						pNrC(node);
-						node = e.querySelectorAll('.g');
-						for (i = 0; i < node.length; i++) {
-							if (node[i].querySelectorAll('*').length === 0 || node[i].querySelectorAll('.rc .s').length === 0 && node[i].querySelectorAll('.r').length !== 0 && node[i].querySelectorAll('.ts').length === 0) {
-								node[i].parentNode.removeChild(node[i]);
-							}
-						}
-						node = e.querySelectorAll('.g h3 a');
-						for (i = 0; i < node.length; i++) {
-							node[i].setAttribute('target', '_blank');
-						}
-						position = getUrlVars().start;
-						if (position > 0) {
-							position = --position + 1;
-						} else {
-							position = 0;
-						}
-						addPosition('#res .g');
-					}
-				});
+		window.addEventListener('DOMNodeInserted', google_loop, false);
+	}
+
+	function mail_loop() {
+		[].forEach.call(document.querySelectorAll('#js-result'), function (e) {
+			if (e.querySelectorAll('.se-num').length === 0) {
+				node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
+				pNrC(node);
+				position = getUrlVars().sf;
+				if (position > 0) {
+					position = --position + 1;
+				} else {
+					position = 0;
+				}
+				addPosition('.result__li');
 			}
-		};
-		window.addEventListener('DOMNodeInserted', loop, false);
-		loop();
+		});
+		node = document.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
+		pNrC(node);
 	}
 
 	function mail() {
@@ -484,25 +499,21 @@
 					'.responses{max-width:800px;width:800px;}' +
 					'.rightcol .layout-content__wrapper{border-right:none;width:800px;}' +
 					'.snippet-sitelinks{margin-left:30px;}');
-		window.loop = function () {
-			[].forEach.call(document.querySelectorAll('#js-result'), function (e) {
-				if (e.querySelectorAll('.se-num').length === 0) {
-					node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
-					pNrC(node);
-					position = getUrlVars().sf;
-					if (position > 0) {
-						position = --position + 1;
-					} else {
-						position = 0;
-					}
-					addPosition('.result__li');
+		window.addEventListener('DOMNodeInserted', mail_loop, false);
+	}
+
+	function rambler_loop() {
+		[].forEach.call(document.querySelectorAll('.l-main-col'), function (e) {
+			if (e.querySelectorAll('.se-num').length === 0) {
+				position = getUrlVars().page;
+				if (position > 0) {
+					position = e.querySelectorAll('.b-serp-item').length * --position;
+				} else {
+					position = 0;
 				}
-			});
-			node = document.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
-			pNrC(node);
-		};
-		window.addEventListener('DOMNodeInserted', loop, false);
-		loop();
+				addPosition('.b-serp-item');
+			}
+		});
 	}
 
 	function rambler() {
@@ -519,21 +530,7 @@
 					'.l-wrapper::after{height:auto;}' +
 					'.b-serp-item__favicon{margin-left:-8px;}' +
 					'.b-serp-item__header{padding-bottom:0;}');
-		window.loop = function () {
-			[].forEach.call(document.querySelectorAll('.l-main-col'), function (e) {
-				if (e.querySelectorAll('.se-num').length === 0) {
-					position = getUrlVars().page;
-					if (position > 0) {
-						position = e.querySelectorAll('.b-serp-item').length * --position;
-					} else {
-						position = 0;
-					}
-					addPosition('.b-serp-item');
-				}
-			});
-		};
-		window.addEventListener('DOMNodeInserted', loop, false);
-		loop();
+		window.addEventListener('DOMNodeInserted', rambler_loop, false);
 	}
 
 	function yahoo() {
@@ -607,25 +604,32 @@
 		});
 	}
 
-	if (domain.indexOf('yandex.') >= 0) {
+	if (curLoc.hostname.indexOf('yandex.') >= 0 &&
+		curLoc.pathname.indexOf('/tune/geo/') >= 0 ||
+		curLoc.pathname.indexOf('/search/customize') === -1 &&
+		curLoc.pathname.indexOf('/search/') >= 0 ||
+		curLoc.pathname.indexOf('/yandsearch') >= 0) {
 		yandex();
 	}
-	else if (domain.indexOf('google.') >= 0) {
+	else if (curLoc.hostname.indexOf('google.') >= 0 &&
+			 curLoc.pathname.indexOf('/search') >= 0) {
 		google();
 	}
-	else if (domain.indexOf('go.mail.ru') >= 0) {
+	else if (curLoc.hostname.indexOf('go.mail.ru') >= 0 &&
+			 curLoc.pathname.indexOf('/search_') === -1 &&
+			 curLoc.pathname.indexOf('/search') >= 0) {
 		mail();
 	}
-	else if (domain.indexOf('rambler.') >= 0) {
+	else if (curLoc.hostname.indexOf('rambler.') >= 0) {
 		rambler();
 	}
-	else if (domain.indexOf('yahoo.') >= 0) {
+	else if (curLoc.hostname.indexOf('yahoo.') >= 0) {
 		yahoo();
 	}
-	else if (domain.indexOf('bing.') >= 0) {
+	else if (curLoc.hostname.indexOf('bing.') >= 0 && curLoc.pathname.indexOf('/search') >= 0) {
 		bing();
 	}
-	else if (domain.indexOf('sputnik.') >= 0) {
+	else if (curLoc.hostname.indexOf('sputnik.') >= 0) {
 		sputnik();
 	}
 	else {
