@@ -35,10 +35,10 @@
 * Чтобы получать обновления автоматически, рекомендую установить скрипт в **Tampermonkey**. Это расширение доступно для всех нижеперечисленных браузеров.
 * Если установлен мой старый скрипт "**Yandex Num (Mod by Eric Draven)**", удалите его.
 * Работоспособность проверена в браузерах:
-  * **Firefox v24-60** ( _Tampermonkey, Greasemonkey_ )
-  * **Chrome v57-66** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
-  * **Яндекс.Браузер v17-18** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
-  * **Opera v44-52** ( _Tampermonkey, Violentmonkey_ )
+  * **Firefox v24+** ( _Tampermonkey, Greasemonkey_ )
+  * **Chrome v57+** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
+  * **Яндекс.Браузер v17+** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
+  * **Opera v44+** ( _Tampermonkey, Violentmonkey_ )
   * В браузерах **Internet Explorer** и **Opera v12** корректно работать не будет!
 ### Пример работы скрипта
 ![Example](https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/images/example.gif)
