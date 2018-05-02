@@ -268,7 +268,6 @@
 
 (function () {
 	'use strict';
-	console.time('111');
 	let i,
 		div,
 		node,
@@ -638,8 +637,6 @@
 		sputnik();
 	}
 	else {
-		console.timeEnd('111');
 		return;
 	}
-	console.timeEnd('111');
 })();
