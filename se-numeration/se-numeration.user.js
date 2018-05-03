@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5b2
+// @version 1.5b3
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -327,7 +327,7 @@
 
 	function yandex_loop() {
 		[].forEach.call(document.querySelectorAll('.content__left'), function (e) {
-			if (e.querySelectorAll('.serp-item').length !== 0 && e.querySelectorAll('.se-num').length === 0) {
+			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0) {
 				node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 				pNrC(node);
 				node = e.querySelectorAll('.serp-adv-item, .serp-item .organic__subtitle span style');
@@ -432,7 +432,7 @@
 	}
 
 	function google_loop() {
-		if (document.querySelectorAll('.mw #rcnt').length !== 0) {
+		if (document.querySelectorAll('.mw #rcnt .g').length !== 0) {
 			[].forEach.call(document.querySelectorAll('#res'), function (e) {
 				if (e.querySelectorAll('.se-num').length === 0) {
 					node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
@@ -474,7 +474,7 @@
 
 	function mail_loop() {
 		[].forEach.call(document.querySelectorAll('#js-result'), function (e) {
-			if (e.querySelectorAll('.se-num').length === 0) {
+			if (e.querySelectorAll('.result__li').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
 				pNrC(node);
 				position = getUrlVars().sf;
@@ -492,7 +492,7 @@
 
 	function mail() {
 		GM_addStyle('.se-num{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#c03;font-weight:700;}' +
-					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
+					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .yandex-rtb_top, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px;}' +
 					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
@@ -508,7 +508,7 @@
 
 	function rambler_loop() {
 		[].forEach.call(document.querySelectorAll('.l-main-col'), function (e) {
-			if (e.querySelectorAll('.se-num').length === 0) {
+			if (e.querySelectorAll('.b-serp-item').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				position = getUrlVars().page;
 				if (position > 0) {
 					position = --position * e.querySelectorAll('.b-serp-item').length;
@@ -559,7 +559,7 @@
 			position = 0;
 		}
 		[].forEach.call(document.querySelectorAll('.searchCenterMiddle'), function (e) {
-			if (e.querySelectorAll('.se-num').length === 0) {
+			if (e.querySelectorAll('.wrapstar, .algo').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				addPosition('.wrapstar, .algo');
 			}
 		});
@@ -594,7 +594,7 @@
 					'.b-result-site-main{font-size:14px;}' +
 					'.b-result-title a{clear:left;}');
 		[].forEach.call(document.querySelectorAll('.b-content-center'), function (e) {
-			if (e.querySelectorAll('.se-num').length === 0) {
+			if (e.querySelectorAll('.b-result').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				node = e.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
 				pNrC(node);
 				position = getUrlVars().from;
