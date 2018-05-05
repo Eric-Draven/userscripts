@@ -36,7 +36,7 @@
 * Чтобы получать обновления автоматически, рекомендую установить скрипт в **Tampermonkey**. Это расширение доступно для всех нижеперечисленных браузеров.
 * Если установлен мой старый скрипт "**Yandex Num (Mod by Eric Draven)**", удалите его.
 * Работоспособность проверена в браузерах:
-  * **Firefox v24+** ( _Tampermonkey, Greasemonkey_ )
+  * **Firefox v23+** ( _Tampermonkey, Greasemonkey_ )
   * **Chrome v57+** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
   * **Яндекс.Браузер v17+** ( _Tampermonkey, Violentmonkey, MeddleMonkey_ )
   * **Opera v44+** ( _Tampermonkey, Violentmonkey_ )
