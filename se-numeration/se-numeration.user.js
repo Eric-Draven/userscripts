@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5b3
+// @version 1.5b4
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -28,16 +28,16 @@
 // @include *://news.yandex.kz/*
 // @include *://news.yandex.com/*
 // @include *://news.yandex.com.tr/*
-// @include *://go.mail.ru/*
+// @include *://go.mail.ru/search?*
 // @include *://nova.rambler.ru/*
 // @include *://search.yahoo.com/*
-// @include *://bing.com/*
-// @include *://www.bing.com/*
+// @include *://bing.com/search*
+// @include *://www.bing.com/search*
 // @include *://sputnik.ru/*
 // @include *://www.sputnik.ru/*
-// @include *://google.*
-// @include *://www.google.*
-// @include *://encrypted.google.*
+// @include *://google.*/search*
+// @include *://www.google.*/search*
+// @include *://encrypted.google.*/search*
 // @match *://yandex.ru/*
 // @match *://yandex.ua/*
 // @match *://yandex.fr/*
@@ -59,209 +59,209 @@
 // @match *://news.yandex.kz/*
 // @match *://news.yandex.com/*
 // @match *://news.yandex.com.tr/*
-// @match *://go.mail.ru/*
+// @match *://go.mail.ru/search?*
 // @match *://nova.rambler.ru/*
 // @match *://search.yahoo.com/*
-// @match *://bing.com/*
-// @match *://www.bing.com/*
+// @match *://bing.com/search*
+// @match *://www.bing.com/search*
 // @match *://sputnik.ru/*
 // @match *://www.sputnik.ru/*
-// @match *://*.google.ad/*
-// @match *://*.google.ae/*
-// @match *://*.google.al/*
-// @match *://*.google.am/*
-// @match *://*.google.as/*
-// @match *://*.google.at/*
-// @match *://*.google.az/*
-// @match *://*.google.ba/*
-// @match *://*.google.be/*
-// @match *://*.google.bf/*
-// @match *://*.google.bg/*
-// @match *://*.google.bi/*
-// @match *://*.google.bj/*
-// @match *://*.google.bs/*
-// @match *://*.google.by/*
-// @match *://*.google.ca/*
-// @match *://*.google.cat/*
-// @match *://*.google.cc/*
-// @match *://*.google.cd/*
-// @match *://*.google.cf/*
-// @match *://*.google.cg/*
-// @match *://*.google.ch/*
-// @match *://*.google.ci/*
-// @match *://*.google.cl/*
-// @match *://*.google.cm/*
-// @match *://*.google.co.ao/*
-// @match *://*.google.co.bw/*
-// @match *://*.google.co.ck/*
-// @match *://*.google.co.cr/*
-// @match *://*.google.co.id/*
-// @match *://*.google.co.il/*
-// @match *://*.google.co.in/*
-// @match *://*.google.co.jp/*
-// @match *://*.google.co.ke/*
-// @match *://*.google.co.kr/*
-// @match *://*.google.co.ls/*
-// @match *://*.google.co.ma/*
-// @match *://*.google.co.mz/*
-// @match *://*.google.co.nz/*
-// @match *://*.google.co.th/*
-// @match *://*.google.co.tz/*
-// @match *://*.google.co.ug/*
-// @match *://*.google.co.uk/*
-// @match *://*.google.co.uz/*
-// @match *://*.google.co.ve/*
-// @match *://*.google.co.vi/*
-// @match *://*.google.co.za/*
-// @match *://*.google.co.zm/*
-// @match *://*.google.co.zw/*
-// @match *://*.google.com.af/*
-// @match *://*.google.com.ag/*
-// @match *://*.google.com.ai/*
-// @match *://*.google.com.ar/*
-// @match *://*.google.com.au/*
-// @match *://*.google.com.bd/*
-// @match *://*.google.com.bh/*
-// @match *://*.google.com.bn/*
-// @match *://*.google.com.bo/*
-// @match *://*.google.com.br/*
-// @match *://*.google.com.bz/*
-// @match *://*.google.com.co/*
-// @match *://*.google.com.cu/*
-// @match *://*.google.com.cy/*
-// @match *://*.google.com.do/*
-// @match *://*.google.com.ec/*
-// @match *://*.google.com.eg/*
-// @match *://*.google.com.et/*
-// @match *://*.google.com.fj/*
-// @match *://*.google.com.gh/*
-// @match *://*.google.com.gi/*
-// @match *://*.google.com.gt/*
-// @match *://*.google.com.hk/*
-// @match *://*.google.com.jm/*
-// @match *://*.google.com.kh/*
-// @match *://*.google.com.kh/*
-// @match *://*.google.com.kw/*
-// @match *://*.google.com.lb/*
-// @match *://*.google.com.ly/*
-// @match *://*.google.com.mm/*
-// @match *://*.google.com.mt/*
-// @match *://*.google.com.mx/*
-// @match *://*.google.com.my/*
-// @match *://*.google.com.na/*
-// @match *://*.google.com.nf/*
-// @match *://*.google.com.ng/*
-// @match *://*.google.com.ni/*
-// @match *://*.google.com.np/*
-// @match *://*.google.com.om/*
-// @match *://*.google.com.pa/*
-// @match *://*.google.com.pe/*
-// @match *://*.google.com.pg/*
-// @match *://*.google.com.ph/*
-// @match *://*.google.com.pk/*
-// @match *://*.google.com.pr/*
-// @match *://*.google.com.py/*
-// @match *://*.google.com.qa/*
-// @match *://*.google.com.sa/*
-// @match *://*.google.com.sb/*
-// @match *://*.google.com.sg/*
-// @match *://*.google.com.sl/*
-// @match *://*.google.com.sv/*
-// @match *://*.google.com.tj/*
-// @match *://*.google.com.tn/*
-// @match *://*.google.com.tr/*
-// @match *://*.google.com.tw/*
-// @match *://*.google.com.ua/*
-// @match *://*.google.com.uy/*
-// @match *://*.google.com.vc/*
-// @match *://*.google.com.vn/*
-// @match *://*.google.cv/*
-// @match *://*.google.cz/*
-// @match *://*.google.de/*
-// @match *://*.google.dj/*
-// @match *://*.google.dk/*
-// @match *://*.google.dm/*
-// @match *://*.google.dz/*
-// @match *://*.google.ee/*
-// @match *://*.google.es/*
-// @match *://*.google.fi/*
-// @match *://*.google.fm/*
-// @match *://*.google.fr/*
-// @match *://*.google.ga/*
-// @match *://*.google.ge/*
-// @match *://*.google.gf/*
-// @match *://*.google.gg/*
-// @match *://*.google.gl/*
-// @match *://*.google.gm/*
-// @match *://*.google.gp/*
-// @match *://*.google.gr/*
-// @match *://*.google.gy/*
-// @match *://*.google.hn/*
-// @match *://*.google.hr/*
-// @match *://*.google.ht/*
-// @match *://*.google.hu/*
-// @match *://*.google.ie/*
-// @match *://*.google.im/*
-// @match *://*.google.iq/*
-// @match *://*.google.is/*
-// @match *://*.google.it/*
-// @match *://*.google.je/*
-// @match *://*.google.jo/*
-// @match *://*.google.kg/*
-// @match *://*.google.ki/*
-// @match *://*.google.kz/*
-// @match *://*.google.la/*
-// @match *://*.google.li/*
-// @match *://*.google.lk/*
-// @match *://*.google.lt/*
-// @match *://*.google.lu/*
-// @match *://*.google.lv/*
-// @match *://*.google.md/*
-// @match *://*.google.me/*
-// @match *://*.google.mg/*
-// @match *://*.google.mk/*
-// @match *://*.google.ml/*
-// @match *://*.google.mn/*
-// @match *://*.google.ms/*
-// @match *://*.google.mu/*
-// @match *://*.google.mv/*
-// @match *://*.google.mw/*
-// @match *://*.google.ne/*
-// @match *://*.google.nl/*
-// @match *://*.google.no/*
-// @match *://*.google.nr/*
-// @match *://*.google.nu/*
-// @match *://*.google.pl/*
-// @match *://*.google.pn/*
-// @match *://*.google.ps/*
-// @match *://*.google.pt/*
-// @match *://*.google.ro/*
-// @match *://*.google.rs/*
-// @match *://*.google.ru/*
-// @match *://*.google.rw/*
-// @match *://*.google.sc/*
-// @match *://*.google.se/*
-// @match *://*.google.sh/*
-// @match *://*.google.si/*
-// @match *://*.google.sk/*
-// @match *://*.google.sm/*
-// @match *://*.google.sn/*
-// @match *://*.google.so/*
-// @match *://*.google.st/*
-// @match *://*.google.td/*
-// @match *://*.google.tg/*
-// @match *://*.google.tk/*
-// @match *://*.google.tl/*
-// @match *://*.google.tm/*
-// @match *://*.google.to/*
-// @match *://*.google.tt/*
-// @match *://*.google.us/*
-// @match *://*.google.vg/*
-// @match *://*.google.vu/*
-// @match *://*.google.ws/*
-// @match *://google.com/*
-// @match *://www.google.com/*
-// @match *://encrypted.google.com/*
+// @match *://*.google.ad/search*
+// @match *://*.google.ae/search*
+// @match *://*.google.al/search*
+// @match *://*.google.am/search*
+// @match *://*.google.as/search*
+// @match *://*.google.at/search*
+// @match *://*.google.az/search*
+// @match *://*.google.ba/search*
+// @match *://*.google.be/search*
+// @match *://*.google.bf/search*
+// @match *://*.google.bg/search*
+// @match *://*.google.bi/search*
+// @match *://*.google.bj/search*
+// @match *://*.google.bs/search*
+// @match *://*.google.by/search*
+// @match *://*.google.ca/search*
+// @match *://*.google.cat/search*
+// @match *://*.google.cc/search*
+// @match *://*.google.cd/search*
+// @match *://*.google.cf/search*
+// @match *://*.google.cg/search*
+// @match *://*.google.ch/search*
+// @match *://*.google.ci/search*
+// @match *://*.google.cl/search*
+// @match *://*.google.cm/search*
+// @match *://*.google.co.ao/search*
+// @match *://*.google.co.bw/search*
+// @match *://*.google.co.ck/search*
+// @match *://*.google.co.cr/search*
+// @match *://*.google.co.id/search*
+// @match *://*.google.co.il/search*
+// @match *://*.google.co.in/search*
+// @match *://*.google.co.jp/search*
+// @match *://*.google.co.ke/search*
+// @match *://*.google.co.kr/search*
+// @match *://*.google.co.ls/search*
+// @match *://*.google.co.ma/search*
+// @match *://*.google.co.mz/search*
+// @match *://*.google.co.nz/search*
+// @match *://*.google.co.th/search*
+// @match *://*.google.co.tz/search*
+// @match *://*.google.co.ug/search*
+// @match *://*.google.co.uk/search*
+// @match *://*.google.co.uz/search*
+// @match *://*.google.co.ve/search*
+// @match *://*.google.co.vi/search*
+// @match *://*.google.co.za/search*
+// @match *://*.google.co.zm/search*
+// @match *://*.google.co.zw/search*
+// @match *://*.google.com.af/search*
+// @match *://*.google.com.ag/search*
+// @match *://*.google.com.ai/search*
+// @match *://*.google.com.ar/search*
+// @match *://*.google.com.au/search*
+// @match *://*.google.com.bd/search*
+// @match *://*.google.com.bh/search*
+// @match *://*.google.com.bn/search*
+// @match *://*.google.com.bo/search*
+// @match *://*.google.com.br/search*
+// @match *://*.google.com.bz/search*
+// @match *://*.google.com.co/search*
+// @match *://*.google.com.cu/search*
+// @match *://*.google.com.cy/search*
+// @match *://*.google.com.do/search*
+// @match *://*.google.com.ec/search*
+// @match *://*.google.com.eg/search*
+// @match *://*.google.com.et/search*
+// @match *://*.google.com.fj/search*
+// @match *://*.google.com.gh/search*
+// @match *://*.google.com.gi/search*
+// @match *://*.google.com.gt/search*
+// @match *://*.google.com.hk/search*
+// @match *://*.google.com.jm/search*
+// @match *://*.google.com.kh/search*
+// @match *://*.google.com.kh/search*
+// @match *://*.google.com.kw/search*
+// @match *://*.google.com.lb/search*
+// @match *://*.google.com.ly/search*
+// @match *://*.google.com.mm/search*
+// @match *://*.google.com.mt/search*
+// @match *://*.google.com.mx/search*
+// @match *://*.google.com.my/search*
+// @match *://*.google.com.na/search*
+// @match *://*.google.com.nf/search*
+// @match *://*.google.com.ng/search*
+// @match *://*.google.com.ni/search*
+// @match *://*.google.com.np/search*
+// @match *://*.google.com.om/search*
+// @match *://*.google.com.pa/search*
+// @match *://*.google.com.pe/search*
+// @match *://*.google.com.pg/search*
+// @match *://*.google.com.ph/search*
+// @match *://*.google.com.pk/search*
+// @match *://*.google.com.pr/search*
+// @match *://*.google.com.py/search*
+// @match *://*.google.com.qa/search*
+// @match *://*.google.com.sa/search*
+// @match *://*.google.com.sb/search*
+// @match *://*.google.com.sg/search*
+// @match *://*.google.com.sl/search*
+// @match *://*.google.com.sv/search*
+// @match *://*.google.com.tj/search*
+// @match *://*.google.com.tn/search*
+// @match *://*.google.com.tr/search*
+// @match *://*.google.com.tw/search*
+// @match *://*.google.com.ua/search*
+// @match *://*.google.com.uy/search*
+// @match *://*.google.com.vc/search*
+// @match *://*.google.com.vn/search*
+// @match *://*.google.cv/search*
+// @match *://*.google.cz/search*
+// @match *://*.google.de/search*
+// @match *://*.google.dj/search*
+// @match *://*.google.dk/search*
+// @match *://*.google.dm/search*
+// @match *://*.google.dz/search*
+// @match *://*.google.ee/search*
+// @match *://*.google.es/search*
+// @match *://*.google.fi/search*
+// @match *://*.google.fm/search*
+// @match *://*.google.fr/search*
+// @match *://*.google.ga/search*
+// @match *://*.google.ge/search*
+// @match *://*.google.gf/search*
+// @match *://*.google.gg/search*
+// @match *://*.google.gl/search*
+// @match *://*.google.gm/search*
+// @match *://*.google.gp/search*
+// @match *://*.google.gr/search*
+// @match *://*.google.gy/search*
+// @match *://*.google.hn/search*
+// @match *://*.google.hr/search*
+// @match *://*.google.ht/search*
+// @match *://*.google.hu/search*
+// @match *://*.google.ie/search*
+// @match *://*.google.im/search*
+// @match *://*.google.iq/search*
+// @match *://*.google.is/search*
+// @match *://*.google.it/search*
+// @match *://*.google.je/search*
+// @match *://*.google.jo/search*
+// @match *://*.google.kg/search*
+// @match *://*.google.ki/search*
+// @match *://*.google.kz/search*
+// @match *://*.google.la/search*
+// @match *://*.google.li/search*
+// @match *://*.google.lk/search*
+// @match *://*.google.lt/search*
+// @match *://*.google.lu/search*
+// @match *://*.google.lv/search*
+// @match *://*.google.md/search*
+// @match *://*.google.me/search*
+// @match *://*.google.mg/search*
+// @match *://*.google.mk/search*
+// @match *://*.google.ml/search*
+// @match *://*.google.mn/search*
+// @match *://*.google.ms/search*
+// @match *://*.google.mu/search*
+// @match *://*.google.mv/search*
+// @match *://*.google.mw/search*
+// @match *://*.google.ne/search*
+// @match *://*.google.nl/search*
+// @match *://*.google.no/search*
+// @match *://*.google.nr/search*
+// @match *://*.google.nu/search*
+// @match *://*.google.pl/search*
+// @match *://*.google.pn/search*
+// @match *://*.google.ps/search*
+// @match *://*.google.pt/search*
+// @match *://*.google.ro/search*
+// @match *://*.google.rs/search*
+// @match *://*.google.ru/search*
+// @match *://*.google.rw/search*
+// @match *://*.google.sc/search*
+// @match *://*.google.se/search*
+// @match *://*.google.sh/search*
+// @match *://*.google.si/search*
+// @match *://*.google.sk/search*
+// @match *://*.google.sm/search*
+// @match *://*.google.sn/search*
+// @match *://*.google.so/search*
+// @match *://*.google.st/search*
+// @match *://*.google.td/search*
+// @match *://*.google.tg/search*
+// @match *://*.google.tk/search*
+// @match *://*.google.tl/search*
+// @match *://*.google.tm/search*
+// @match *://*.google.to/search*
+// @match *://*.google.tt/search*
+// @match *://*.google.us/search*
+// @match *://*.google.vg/search*
+// @match *://*.google.vu/search*
+// @match *://*.google.ws/search*
+// @match *://google.com/search*
+// @match *://www.google.com/search*
+// @match *://encrypted.google.com/search*
 // @exclude ftp://*/*
 // @grant none
 // ==/UserScript==
@@ -274,7 +274,8 @@
 		head,
 		style,
 		position,
-		curLoc = window.top.location;
+		curLoc = window.top.location,
+		nodeList;
 
 	function GM_addStyle(css) {
 		head = document.getElementsByTagName('head')[0];
@@ -296,16 +297,22 @@
 		return vars;
 	}
 
+	function forEach(array, callback, scope) {
+		for (let i = 0; i < array.length; i++) {
+			callback.call(scope, i, array[i]);
+		}
+	}
+
 	function pNrC(node) {
 		if(node.length > 0) {
-			for (i = 0; i < node.length; i++) {
+			for (let i = 0; i < node.length; i++) {
 				node[i].parentNode.removeChild(node[i]);
 			}
 		}
 	}
 
 	function addPosition(addTo) {
-		[].forEach.call(document.querySelectorAll(addTo), function (e) {
+		forEach(document.querySelectorAll(addTo), function (index, e) {
 			div = document.createElement('div');
 			div.setAttribute('class', 'se-num');
 			div.textContent = (position + 1) + '.';
@@ -326,7 +333,8 @@
 	}
 
 	function yandex_loop() {
-		[].forEach.call(document.querySelectorAll('.content__left'), function (e) {
+		nodeList = document.querySelectorAll('.content__left ul');
+		forEach(nodeList, function (index, e) {
 			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0) {
 				node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 				pNrC(node);
@@ -338,7 +346,7 @@
 				for (i = 0; i < node.length; i++) {
 					if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
 						node[i].className += " se-badnode";
-					} else if (node[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length !== 0) {
+					} else if (node[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length > 0) {
 						node[i].className += " se-badnode";
 					} else {
 						node[i].className += " se-goodnode";
@@ -432,34 +440,32 @@
 	}
 
 	function google_loop() {
-		if (document.querySelectorAll('.mw #rcnt .g').length !== 0) {
-			[].forEach.call(document.querySelectorAll('#res'), function (e) {
-				if (e.querySelectorAll('.se-num').length === 0) {
-					node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
-					pNrC(node);
-					node = e.querySelectorAll('.g');
-					for (i = 0; i < node.length; i++) {
-						if (node[i].querySelectorAll('*').length === 0 ||
-							node[i].querySelectorAll('.rc .s').length === 0 &&
-							node[i].querySelectorAll('.r').length !== 0 &&
-							node[i].querySelectorAll('.ts').length === 0) {
-							node[i].parentNode.removeChild(node[i]);
-						}
+		forEach(nodeList, function (index, e) {
+			if (e.querySelectorAll('.se-num').length === 0) {
+				node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
+				pNrC(node);
+				node = e.querySelectorAll('.g');
+				for (i = 0; i < node.length; i++) {
+					if (node[i].querySelectorAll('*').length === 0 ||
+						node[i].querySelectorAll('.rc .s').length === 0 &&
+						node[i].querySelectorAll('.r').length > 0 &&
+						node[i].querySelectorAll('.ts').length === 0) {
+						node[i].parentNode.removeChild(node[i]);
 					}
-					node = e.querySelectorAll('.g h3 a');
-					for (i = 0; i < node.length; i++) {
-						node[i].setAttribute('target', '_blank');
-					}
-					position = getUrlVars().start;
-					if (position > 0) {
-						position = position++;
-					} else {
-						position = 0;
-					}
-					addPosition('#res .g');
 				}
-			});
-		}
+				node = e.querySelectorAll('.g h3 a');
+				for (i = 0; i < node.length; i++) {
+					node[i].setAttribute('target', '_blank');
+				}
+				position = getUrlVars().start;
+				if (position > 0) {
+					position = position++;
+				} else {
+					position = 0;
+				}
+				addPosition('#res .g');
+			}
+		});
 	}
 
 	function google() {
@@ -469,11 +475,12 @@
 					'.g{margin-bottom:15px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
 					'.s{max-width:848px !important;}');
+		nodeList = document.querySelectorAll('#res');
 		window.addEventListener('DOMNodeInserted', google_loop, false);
 	}
 
 	function mail_loop() {
-		[].forEach.call(document.querySelectorAll('#js-result'), function (e) {
+		forEach(nodeList, function (index, e) {
 			if (e.querySelectorAll('.result__li').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
 				pNrC(node);
@@ -503,11 +510,13 @@
 					'.responses{max-width:800px;width:800px;}' +
 					'.rightcol .layout-content__wrapper{border-right:none;width:800px;}' +
 					'.snippet-sitelinks{margin-left:30px;}');
+		nodeList = document.querySelectorAll('#js-result');
 		window.addEventListener('DOMNodeInserted', mail_loop, false);
 	}
 
 	function rambler_loop() {
-		[].forEach.call(document.querySelectorAll('.l-main-col'), function (e) {
+		nodeList = document.querySelectorAll('.l-main-col');
+		forEach(nodeList, function (index, e) {
 			if (e.querySelectorAll('.b-serp-item').length > 0 && e.querySelectorAll('.se-num').length === 0) {
 				position = getUrlVars().page;
 				if (position > 0) {
@@ -539,7 +548,7 @@
 
 	function yahoo() {
 		GM_addStyle('.se-num{float:left;font-size:18px;line-height:15px;margin:3px 12px 56px 0;color:#c03;font-weight:700;}' +
-					'#right, #appFinance, #browserExtensionPromotion, .searchCenterBottomAds, .searchCenterFooter, .appMathCalculator, .f5110t0q65, .dd{display:none !important;}' +
+					'#right, #appFinance, #browserExtensionPromotion, .searchCenterBottomAds, .searchCenterFooter, .appMathCalculator, .f5110t0q65, .dd, .ad_loc_top, .ad_loc_bot{display:none !important;}' +
 					'.assist, .wrapstar, .algo, .pagination{display:block !important;}' +
 					'.sc, #results #main #web .singlecol.sc.tt.twc, .dd, #results #web .dd, .ddgrp .dd, #results #web .ddgrp .dd, .searchCenterBottom{margin-top:0 !important;}' +
 					'#bd{min-height:auto !important;min-width:auto !important;}' +
@@ -552,17 +561,15 @@
 					'.dd .compForm{margin-bottom:16px !important;}' +
 					'#ft_wrapper #ft{padding-left:0;}' +
 					'#ft_wrapper #ft ul{margin-left:134px;}');
-		position = getUrlVars().b;
-		if (position > 0) {
-			position = --position;
-		} else {
-			position = 0;
-		}
-		[].forEach.call(document.querySelectorAll('.searchCenterMiddle'), function (e) {
-			if (e.querySelectorAll('.wrapstar, .algo').length > 0 && e.querySelectorAll('.se-num').length === 0) {
-				addPosition('.wrapstar, .algo');
+		if (document.querySelectorAll('.wrapstar, .algo').length > 0) {
+			position = getUrlVars().b;
+			if (position > 0) {
+				position = --position;
+			} else {
+				position = 0;
 			}
-		});
+			addPosition('.searchCenterMiddle .wrapstar, .searchCenterMiddle .algo');
+		}
 	}
 
 	function bing() {
@@ -593,35 +600,31 @@
 					'.b-result{padding:0 0 8px 30px;}' +
 					'.b-result-site-main{font-size:14px;}' +
 					'.b-result-title a{clear:left;}');
-		[].forEach.call(document.querySelectorAll('.b-content-center'), function (e) {
-			if (e.querySelectorAll('.b-result').length > 0 && e.querySelectorAll('.se-num').length === 0) {
-				node = e.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
-				pNrC(node);
-				position = getUrlVars().from;
-				if (position > 0) {
-					position = --position;
-				} else {
-					position = 0;
-				}
-				addPosition('.b-result');
+		nodeList = document.querySelectorAll('.b-content-center')[0];
+		if (nodeList !== undefined && nodeList.querySelectorAll('.b-result').length > 0) {
+			node = nodeList.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
+			pNrC(node);
+			position = getUrlVars().from;
+			if (position > 0) {
+				position = --position;
+			} else {
+				position = 0;
 			}
-		});
+			addPosition('.b-result');
+		}
 	}
-
 	if (curLoc.hostname.indexOf('yandex.') >= 0 &&
 		curLoc.pathname.indexOf('/tune/geo/') >= 0 ||
-		curLoc.pathname.indexOf('/search/customize') === -1 &&
-		curLoc.pathname.indexOf('/search/') >= 0 ||
-		curLoc.pathname.indexOf('/yandsearch') >= 0) {
+		curLoc.pathname.indexOf('/yandsearch') >= 0 ||
+		curLoc.pathname.indexOf('/search/') >= 0 &&
+		curLoc.pathname.indexOf('/search/customize') === -1) {
 		yandex();
 	}
 	else if (curLoc.hostname.indexOf('google.') >= 0 &&
-			 curLoc.pathname.indexOf('/search') >= 0) {
+			 document.querySelectorAll('.mw #rcnt .g').length > 0) {
 		google();
 	}
-	else if (curLoc.hostname.indexOf('go.mail.ru') >= 0 &&
-			 curLoc.pathname.indexOf('/search_') === -1 &&
-			 curLoc.pathname.indexOf('/search') >= 0) {
+	else if (curLoc.hostname.indexOf('go.mail.ru') >= 0) {
 		mail();
 	}
 	else if (curLoc.hostname.indexOf('rambler.') >= 0) {
@@ -630,7 +633,7 @@
 	else if (curLoc.hostname.indexOf('yahoo.') >= 0) {
 		yahoo();
 	}
-	else if (curLoc.hostname.indexOf('bing.') >= 0 && curLoc.pathname.indexOf('/search') >= 0) {
+	else if (curLoc.hostname.indexOf('bing.') >= 0) {
 		bing();
 	}
 	else if (curLoc.hostname.indexOf('sputnik.') >= 0) {
