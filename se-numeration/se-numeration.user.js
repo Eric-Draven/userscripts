@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5b5
+// @version 1.5b6
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -350,7 +350,7 @@
 				}
 				node = e.querySelectorAll('.serp-item:not(.se-serp-adv-item) > div > .organic__subtitle > span[class^=organic__]');
 				for (i = 0; i < node.length; i++) {
-					if (node[i].querySelectorAll('.label_color_yellow').length === 0) {
+					if (node[i].querySelectorAll('.label_color_yellow').length === 0 && node[i].querySelectorAll('*').length === 0) {
 						try {
 							node[i]._shadowRoot = node[i].attachShadow({mode:'open'});
 						} catch (err) {
