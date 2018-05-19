@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5b4
+// @version 1.5b5
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -263,12 +263,15 @@
 // @match *://www.google.com/search*
 // @match *://encrypted.google.com/search*
 // @exclude ftp://*/*
+// @exclude file:///*/*
 // @grant none
 // ==/UserScript==
 
 (function () {
 	'use strict';
+
 	let i,
+		db,
 		div,
 		node,
 		head,
@@ -278,7 +281,7 @@
 		nodeList;
 
 	function GM_addStyle(css) {
-		head = document.getElementsByTagName('head')[0];
+		head = document.head || document.getElementsByTagName('head')[0];
 		if (head) {
 			style = document.createElement('style');
 			style.setAttribute('type', 'text/css');
@@ -306,13 +309,14 @@
 	function pNrC(node) {
 		if(node.length > 0) {
 			for (let i = 0; i < node.length; i++) {
+				node[i].innerHTML = '';
 				node[i].parentNode.removeChild(node[i]);
 			}
 		}
 	}
 
 	function addPosition(addTo) {
-		forEach(document.querySelectorAll(addTo), function (index, e) {
+		forEach(db.querySelectorAll(addTo), function (index, e) {
 			div = document.createElement('div');
 			div.setAttribute('class', 'se-num');
 			div.textContent = (position + 1) + '.';
@@ -322,34 +326,48 @@
 	}
 
 	function ifCacheCleared(sS) {
-		if (sS === 'se-on'){
-			GM_addStyle('.se-serp-adv-item{display:block !important;}');
-		} else {
-			GM_addStyle('.se-serp-adv-item{display:none !important;}');
-			if (sS === null){
-				sessionStorage.setItem('checkboxStatus', 'se-off');
-			}
+		switch (sS) {
+			case "se-on":
+				GM_addStyle('.se-serp-adv-item{display:block !important;}');
+				break;
+			default:
+				GM_addStyle('.se-serp-adv-item{display:none !important;}');
+				if (sS === null){
+					sessionStorage.setItem('checkboxStatus', 'se-off');
+				}
 		}
 	}
 
 	function yandex_loop() {
-		nodeList = document.querySelectorAll('.content__left ul');
+		nodeList = db.querySelectorAll('.content__left ul');
 		forEach(nodeList, function (index, e) {
-			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0) {
+			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode):not(.se-serp-adv-item)').length > 0) {
 				node = e.querySelectorAll('.head-stripe, .t-construct-adapter__videowiz, .t-construct-adapter__default-search');
 				pNrC(node);
-				node = e.querySelectorAll('.serp-adv-item, .serp-item .organic__subtitle span style');
+				node = e.querySelectorAll('.serp-adv-item');
 				for (i = 0; i < node.length; i++) {
-					node[i].className = "se-serp-adv-item serp-adv-item";
+					node[i].className += ' se-serp-adv-item';
 				}
-				node = e.querySelectorAll('.serp-item');
+				node = e.querySelectorAll('.serp-item:not(.se-serp-adv-item) > div > .organic__subtitle > span[class^=organic__]');
 				for (i = 0; i < node.length; i++) {
-					if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
-						node[i].className += " se-badnode";
+					if (node[i].querySelectorAll('.label_color_yellow').length === 0) {
+						try {
+							node[i]._shadowRoot = node[i].attachShadow({mode:'open'});
+						} catch (err) {
+							node[i].className += ' se-protected-adv';
+						}
+					}
+				}
+				node = e.querySelectorAll('.serp-item:not(.se-serp-adv-item)');
+				for (i = 0; i < node.length; i++) {
+					if (node[i].querySelectorAll('.se-protected-adv, .label_color_yellow').length > 0) {
+						node[i].className += ' se-serp-adv-item';
+					} else if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
+						node[i].className += ' se-badnode';
 					} else if (node[i].querySelectorAll('.composite, .organic__title-wrapper_lines_2').length > 0) {
-						node[i].className += " se-badnode";
+						node[i].className += ' se-badnode';
 					} else {
-						node[i].className += " se-goodnode";
+						node[i].className += ' se-goodnode';
 					}
 				}
 				position = getUrlVars().p;
@@ -362,41 +380,43 @@
 				ifCacheCleared(sessionStorage.getItem('checkboxStatus'));
 			}
 		});
+	}
 
-		if (document.querySelectorAll('.se-button-bar').length === 0) {
-			let checkboxStatus = '',
-				panel = document.createElement('div'),
-				getParent = document.querySelectorAll('.navigation__region')[0];
-			if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
-				checkboxStatus = 'checked="" ';
-			}
-			panel.setAttribute('class', 'se-button-bar');
-			panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
-				'<span class="se-checkbox-on-off">' +
-				'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
-				'<label>' +
-				'<span class="checked"></span>' +
-				'<span class="toggle"></span>' +
-				'<span class="unchecked"></span>' +
-				'</label>' +
-				'</span>' +
-				' (' + document.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
-			getParent.appendChild(panel);
-			getParent.insertBefore(panel, getParent.lastChild);
-			let onOff = document.getElementById('se-checkbox-on-off'),
-				obj = {
-					handleEvent: function() {
-						if (sessionStorage.getItem('checkboxStatus') === 'se-on') {
+	function yandex_direct() {
+		let checkboxStatus = '',
+			panel = document.createElement('div'),
+			getParent = db.querySelectorAll('.navigation__region')[0];
+		if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
+			checkboxStatus = 'checked="" ';
+		}
+		panel.setAttribute('class', 'se-button-bar');
+		panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
+			'<span class="se-checkbox-on-off">' +
+			'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
+			'<label>' +
+			'<span class="checked"></span>' +
+			'<span class="toggle"></span>' +
+			'<span class="unchecked"></span>' +
+			'</label>' +
+			'</span>' +
+			' (' + db.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
+		getParent.appendChild(panel);
+		getParent.insertBefore(panel, getParent.lastChild);
+		let onOff = document.getElementById('se-checkbox-on-off'),
+			obj = {
+				handleEvent: function() {
+					switch (sessionStorage.getItem('checkboxStatus')) {
+						case "se-on":
 							GM_addStyle('.se-serp-adv-item{display:none !important;}');
 							sessionStorage.setItem('checkboxStatus', 'se-off');
-						} else {
+							break;
+						default:
 							GM_addStyle('.se-serp-adv-item{display:block !important;}');
 							sessionStorage.setItem('checkboxStatus', 'se-on');
-						}
 					}
-				};
-			onOff.addEventListener("click", obj, false);
-		}
+				}
+			};
+		onOff.addEventListener("click", obj, false);
 	}
 
 	function yandex() {
@@ -423,7 +443,6 @@
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
 						'.serp-item .wrapper{display:block !important;}' +
 						'.wrapper__cell_type_content{display:contents !important;width:100% !important;max-width:100% !important;padding-top:0 !important}' +
-						'.label.label_color_yellow{background-color:#ff9 !important;}' +
 						'.se-button-bar{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
 						'.se-checkbox{padding:0 8px;color:#999;}' +
 						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:16px;padding-right:2px;overflow:hidden;vertical-align:middle;}' +
@@ -435,11 +454,20 @@
 						'.se-checkbox-on-off .checked, .se-checkbox-on-off input[type=checkbox]:checked+label .unchecked{width:0;}' +
 						'.se-checkbox-on-off .toggle{background-color:#fff;width:13px;border-radius:13px;}' +
 						'.se-checkbox-on-off .unchecked, .se-checkbox-on-off input[type=checkbox]:checked+label .checked{width:22px;}');
-			window.addEventListener('DOMNodeInserted', yandex_loop, false);
+			window.addEventListener('DOMNodeInserted', function() {
+				db = document.body;
+				if (db.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode) ').length > 0 && db.querySelectorAll('.se-num').length === 0) {
+					yandex_loop();
+				}
+				if (db.querySelectorAll('.se-button-bar').length === 0) {
+					yandex_direct();
+				}
+			}, false);
 		}
 	}
 
 	function google_loop() {
+		nodeList = db.querySelectorAll('#res');
 		forEach(nodeList, function (index, e) {
 			if (e.querySelectorAll('.se-num').length === 0) {
 				node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
@@ -450,6 +478,7 @@
 						node[i].querySelectorAll('.rc .s').length === 0 &&
 						node[i].querySelectorAll('.r').length > 0 &&
 						node[i].querySelectorAll('.ts').length === 0) {
+						node[i].innerHTML = '';
 						node[i].parentNode.removeChild(node[i]);
 					}
 				}
@@ -475,57 +504,62 @@
 					'.g{margin-bottom:15px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
 					'.s{max-width:848px !important;}');
-		nodeList = document.querySelectorAll('#res');
-		window.addEventListener('DOMNodeInserted', google_loop, false);
+		db = document.body;
+		if (db.querySelectorAll('.mw #rcnt .g').length > 0) {
+			google_loop();
+		}
 	}
 
 	function mail_loop() {
+		nodeList = db.querySelectorAll('#js-result');
 		forEach(nodeList, function (index, e) {
-			if (e.querySelectorAll('.result__li').length > 0 && e.querySelectorAll('.se-num').length === 0) {
-				node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
-				pNrC(node);
-				position = getUrlVars().sf;
-				if (position > 0) {
-					position = position++;
-				} else {
-					position = 0;
-				}
-				addPosition('.result__li');
+			node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
+			pNrC(node);
+			position = getUrlVars().sf;
+			if (position > 0) {
+				position = position++;
+			} else {
+				position = 0;
 			}
+			addPosition('.result__li');
 		});
-		node = document.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
-		pNrC(node);
 	}
 
 	function mail() {
 		GM_addStyle('.se-num{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#c03;font-weight:700;}' +
 					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .yandex-rtb_top, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail, #layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
-					'.layout-content__wrapper{padding-bottom:0px;}' +
-					'.block-info-serp__url{color:darkgreen;font-size:15px;}' +
-					'.result__title{white-space:nowrap;}' +
-					'.layout-content{padding-bottom:60px;}' +
-					'.result__microdata_video__img, .result__person__img{margin-right:15px;}' +
-					'.layout_two-coll .layout-content__wrapper{margin-right:0;}' +
-					'.responses{max-width:800px;width:800px;}' +
-					'.rightcol .layout-content__wrapper{border-right:none;width:800px;}' +
-					'.snippet-sitelinks{margin-left:30px;}');
-		nodeList = document.querySelectorAll('#js-result');
-		window.addEventListener('DOMNodeInserted', mail_loop, false);
+					'.layout-content__wrapper{padding-bottom:0px !important;}' +
+					'.block-info-serp__url{font-size:15px !important;}' +
+					'.result__title{white-space:nowrap !important;}' +
+					'.layout-content{padding-bottom:60px !important;}' +
+					'.result__microdata_video__img, .result__person__img{margin-right:15px !important;}' +
+					'.layout_two-coll .layout-content__wrapper{margin-right:0 !important;}' +
+					'.responses{max-width:800px;width:800px !important;}' +
+					'.rightcol .layout-content__wrapper{border-right:none;width:800px !important;}' +
+					'.snippet-sitelinks{margin-left:30px !important;}');
+		window.addEventListener('DOMNodeInserted', function(){
+			db = document.body;
+			if (db.querySelectorAll('.result__li').length > 0 && db.querySelectorAll('.se-num').length === 0) {
+				mail_loop();
+			}
+			node = db.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
+			if (node.length > 0) {
+				pNrC(node);
+			}
+		}, false);
 	}
 
 	function rambler_loop() {
-		nodeList = document.querySelectorAll('.l-main-col');
+		nodeList = db.querySelectorAll('.l-main-col');
 		forEach(nodeList, function (index, e) {
-			if (e.querySelectorAll('.b-serp-item').length > 0 && e.querySelectorAll('.se-num').length === 0) {
-				position = getUrlVars().page;
-				if (position > 0) {
-					position = --position * e.querySelectorAll('.b-serp-item').length;
-				} else {
-					position = 0;
-				}
-				addPosition('.b-serp-item');
+			position = getUrlVars().page;
+			if (position > 0) {
+				position = --position * e.querySelectorAll('.b-serp-item').length;
+			} else {
+				position = 0;
 			}
+			addPosition('.b-serp-item');
 		});
 	}
 
@@ -543,7 +577,12 @@
 					'.l-wrapper::after{height:auto;}' +
 					'.b-serp-item__favicon{margin-left:-8px;}' +
 					'.b-serp-item__header{padding-bottom:0;}');
-		window.addEventListener('DOMNodeInserted', rambler_loop, false);
+		window.addEventListener('DOMNodeInserted', function() {
+			db = document.body;
+			if (db.querySelectorAll('.b-serp-item').length > 0 && db.querySelectorAll('.se-num').length === 0) {
+				rambler_loop();
+			}
+		}, false);
 	}
 
 	function yahoo() {
@@ -561,7 +600,8 @@
 					'.dd .compForm{margin-bottom:16px !important;}' +
 					'#ft_wrapper #ft{padding-left:0;}' +
 					'#ft_wrapper #ft ul{margin-left:134px;}');
-		if (document.querySelectorAll('.wrapstar, .algo').length > 0) {
+		db = document.body;
+		if (db.querySelectorAll('.wrapstar, .algo').length > 0) {
 			position = getUrlVars().b;
 			if (position > 0) {
 				position = --position;
@@ -581,6 +621,7 @@
 					'#b_results > .b_algo{padding:0 20px;}' +
 					'#b_footerItems{padding:0 10px;}' +
 					'#b_footerItems a{margin-right:8px;}');
+		db = document.body;
 		position = getUrlVars().first;
 		if (position > 0) {
 			position = --position;
@@ -600,7 +641,8 @@
 					'.b-result{padding:0 0 8px 30px;}' +
 					'.b-result-site-main{font-size:14px;}' +
 					'.b-result-title a{clear:left;}');
-		nodeList = document.querySelectorAll('.b-content-center')[0];
+		db = document.body;
+		nodeList = db.querySelectorAll('.b-content-center')[0];
 		if (nodeList !== undefined && nodeList.querySelectorAll('.b-result').length > 0) {
 			node = nodeList.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
 			pNrC(node);
@@ -613,33 +655,33 @@
 			addPosition('.b-result');
 		}
 	}
-	if (curLoc.hostname.indexOf('yandex.') >= 0 &&
-		curLoc.pathname.indexOf('/tune/geo/') >= 0 ||
-		curLoc.pathname.indexOf('/yandsearch') >= 0 ||
-		curLoc.pathname.indexOf('/search/') >= 0 &&
-		curLoc.pathname.indexOf('/search/customize') === -1) {
-		yandex();
-	}
-	else if (curLoc.hostname.indexOf('google.') >= 0 &&
-			 document.querySelectorAll('.mw #rcnt .g').length > 0) {
-		google();
-	}
-	else if (curLoc.hostname.indexOf('go.mail.ru') >= 0) {
-		mail();
-	}
-	else if (curLoc.hostname.indexOf('rambler.') >= 0) {
-		rambler();
-	}
-	else if (curLoc.hostname.indexOf('yahoo.') >= 0) {
-		yahoo();
-	}
-	else if (curLoc.hostname.indexOf('bing.') >= 0) {
-		bing();
-	}
-	else if (curLoc.hostname.indexOf('sputnik.') >= 0) {
-		sputnik();
-	}
-	else {
-		return;
+
+	switch (true) {
+		case curLoc.hostname.indexOf('yandex.') >= 0 &&
+			curLoc.pathname.indexOf('/tune/geo/') >= 0 ||
+			curLoc.pathname.indexOf('/yandsearch') >= 0 ||
+			curLoc.pathname.indexOf('/search/') >= 0 &&
+			curLoc.pathname.indexOf('/search/customize') === -1:
+			yandex();
+			break;
+		case curLoc.hostname.indexOf('google.') >= 0 &&
+			curLoc.href.indexOf('&tbm=isch') === -1:
+			google();
+			break;
+		case curLoc.hostname.indexOf('go.mail.ru') >= 0:
+			mail();
+			break;
+		case curLoc.hostname.indexOf('rambler.') >= 0:
+			rambler();
+			break;
+		case curLoc.hostname.indexOf('yahoo.') >= 0:
+			yahoo();
+			break;
+		case curLoc.hostname.indexOf('bing.') >= 0:
+			bing();
+			break;
+		case curLoc.hostname.indexOf('sputnik.') >= 0:
+			sputnik();
+			break;
 	}
 })();
