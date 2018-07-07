@@ -1,7 +1,7 @@
 # Numeration for Search Engines ( UserScript )
 Единый скрипт автоматической нумерации для поисковиков: **Yandex**, **Google**, **Mail.ru**, **Rambler**, **Yahoo**, **Bing**, **Sputnik**.
 
-[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js) ( **v1.5b9** от **07.07.2018** )
+[Скачать / Установить / Переустановить](https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js) ( **v1.5b10** от **07.07.2018** )
 
 ## О работе скрипта в поисковиках
 * **Yandex**:
