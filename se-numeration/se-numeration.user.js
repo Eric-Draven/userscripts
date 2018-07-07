@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5b8
+// @version 1.5b9
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -272,7 +272,7 @@
 
 	let i,
 		db,
-		div,
+		span,
 		node,
 		head,
 		style,
@@ -317,15 +317,16 @@
 
 	function addPosition(addTo) {
 		forEach(db.querySelectorAll(addTo), function (index, e) {
-			div = document.createElement('div');
-			div.setAttribute('class', 'se-num');
-			div.textContent = (position + 1) + '.';
-			e.insertBefore(div, e.firstChild);
+			span = document.createElement('span');
+			span.setAttribute('class', 'se-num');
+			span.textContent = (position + 1) + '.';
+			e.insertBefore(span, e.firstChild);
 			position++;
 		});
 	}
 
-	function ifCacheCleared(sS) {
+	function ifCacheCleared(key) {
+		let sS = sessionStorage.getItem(key);
 		switch (sS) {
 			case "se-on":
 				GM_addStyle('.se-serp-adv-item{display:block !important;}');
@@ -333,7 +334,7 @@
 			default:
 				GM_addStyle('.se-serp-adv-item{display:none !important;}');
 				if (sS === null){
-					sessionStorage.setItem('checkboxStatus', 'se-off');
+					sessionStorage.setItem(key, 'se-off');
 				}
 		}
 	}
@@ -379,43 +380,45 @@
 				} else {
 					position = 0;
 				}
-				addPosition('.se-goodnode');
-				ifCacheCleared(sessionStorage.getItem('checkboxStatus'));
+				addPosition('.se-goodnode h2 a .organic__url-text');
+				ifCacheCleared('directStatus');
 			}
 		});
 	}
 
-	function yandex_direct() {
+	function yandex_switches(parent, toHide, name, title, esp1) {
 		let checkboxStatus = '',
+			countDirect = '',
 			panel = document.createElement('div'),
-			getParent = db.querySelectorAll('.navigation__region')[0];
-		if (sessionStorage.getItem('checkboxStatus') === 'se-on'){
-			checkboxStatus = 'checked="" ';
+			getParent = db.querySelectorAll(parent)[0];
+		if (name === 'direct'){
+			countDirect = ' (' + db.querySelectorAll(".content__left .se-serp-adv-item").length + ')';
+			if (sessionStorage.getItem('directStatus') === 'se-on'){
+				checkboxStatus = 'checked="" ';
+			}
 		}
-		panel.setAttribute('class', 'se-button-bar');
-		panel.innerHTML = '<div class="se-checkbox">Я.Директ: ' +
+		panel.setAttribute('class', 'se-bar-' + name);
+		panel.innerHTML = '<div class="se-checkbox-' + name + esp1 + '">' + title + ': ' +
 			'<span class="se-checkbox-on-off">' +
-			'<input id="se-checkbox-on-off" ' + checkboxStatus + 'type="checkbox">' +
-			'<label>' +
-			'<span class="checked"></span>' +
-			'<span class="toggle"></span>' +
-			'<span class="unchecked"></span>' +
-			'</label>' +
-			'</span>' +
-			' (' + db.querySelectorAll(".content__left .se-serp-adv-item").length + ')</div>';
+			'<input id="se-checkbox-on-off-' + name + '" ' + checkboxStatus + 'type="checkbox">' +
+			'<label><span class="checked"></span><span class="toggle"></span><span class="unchecked"></span></label>' +
+			'</span>' + countDirect + '</div>';
 		getParent.appendChild(panel);
 		getParent.insertBefore(panel, getParent.lastChild);
-		let onOff = document.getElementById('se-checkbox-on-off'),
+		let onOff = document.getElementById('se-checkbox-on-off-' + name),
 			obj = {
 				handleEvent: function() {
-					switch (sessionStorage.getItem('checkboxStatus')) {
+					switch (sessionStorage.getItem(name + 'Status')) {
 						case "se-on":
-							GM_addStyle('.se-serp-adv-item{display:none !important;}');
-							sessionStorage.setItem('checkboxStatus', 'se-off');
+							GM_addStyle(toHide + '{display:none !important;}');
+							sessionStorage.setItem(name + 'Status', 'se-off');
 							break;
 						default:
-							GM_addStyle('.se-serp-adv-item{display:block !important;}');
-							sessionStorage.setItem('checkboxStatus', 'se-on');
+							GM_addStyle(toHide + '{display:block !important;}');
+							sessionStorage.setItem(name + 'Status', 'se-on');
+					}
+					if (name === 'footer'){
+						window.top.scrollTo(0, 9999);
 					}
 				}
 			};
@@ -431,10 +434,11 @@
 						'.story-item__title{font-size:18px !important;}' +
 						'.document__provider-name{color:#c03 !important;}');
 		} else if (curLoc.pathname.indexOf('/search/') >= 0 || curLoc.pathname.indexOf('/yandsearch') >= 0) {
-			GM_addStyle('.se-num{float:left;line-height:normal;margin:2px 8px 0 8px;color:#c03;font-size:17px;font-weight:700;}' +
+			GM_addStyle('.se-num{margin:2px 8px 0 8px;color:#c03;font-weight:700;}' +
 						'.se-badnode, .distr-default-search, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right, .related, .main__carousel, .serp-user__login-input,' +
 						'.serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no, .z-default-search, .logo-description, .distr-popup__content, .wrapper__cell_type_thumb .grid__col,' +
-						'.yaplus, .yaplus__tooltip{display:none !important;}' +
+						'.yaplus, .yaplus__tooltip,' +
+						'.serp-footer__main{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
@@ -446,11 +450,11 @@
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
-						'.serp-item .wrapper{display:block !important;}' +
-						'.wrapper__cell_type_content{display:contents !important;width:100% !important;max-width:100% !important;padding-top:0 !important}' +
-						'.se-button-bar{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
-						'.se-checkbox{padding:0 8px;color:#999;}' +
-						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:16px;padding-right:2px;overflow:hidden;vertical-align:middle;}' +
+						'.se-bar-direct{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
+						'.se-checkbox-direct{padding:0 8px;color:#999;}' +
+						'.se-checkbox-footer{position:relative;padding-left:26px;font-weight:700;opacity:.45;}' +
+						'.se-checkbox-footer:hover{opacity:1;}' +
+						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:15px;padding-right:2px;overflow:hidden;vertical-align:sub;}' +
 						'.se-checkbox-on-off input[type=checkbox]{position:absolute;margin:0;width:37px;height:15px;opacity:0;cursor:pointer;}' +
 						'.se-checkbox-on-off input[type=checkbox]:checked+label{background-color:#090;}' +
 						'.se-checkbox-on-off label>*{display:inline-block;height:100%;vertical-align:top;-moz-transition:width.1s;-webkit-transition:width.1s;transition:width.1s;-webkit-transition:all 0.3s ease 0s;transition:all 0.3s ease 0s;}' +
@@ -461,11 +465,15 @@
 						'.se-checkbox-on-off .unchecked, .se-checkbox-on-off input[type=checkbox]:checked+label .checked{width:22px;}');
 			window.addEventListener('DOMNodeInserted', function() {
 				db = document.body;
-				if (db.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode) ').length > 0 && db.querySelectorAll('.se-num').length === 0) {
+				if (db.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0 && db.querySelectorAll('.se-num').length === 0) {
 					yandex_loop();
 				}
-				if (db.querySelectorAll('.se-button-bar').length === 0) {
-					yandex_direct();
+				if (db.querySelectorAll('.se-bar-direct').length === 0) {
+					yandex_switches('.navigation__region', '.se-serp-adv-item', 'direct', 'Я.Директ', '');
+				}
+				if (db.querySelectorAll('.serp-footer__wrapper').length !== 0 && db.querySelectorAll('.se-bar-footer').length === 0) {
+					sessionStorage.setItem('footerStatus', 'se-off');
+					yandex_switches('.serp-footer__wrapper', '.serp-footer__main', 'footer', 'Footer', ' serp-footer__link');
 				}
 			}, false);
 		}
@@ -519,8 +527,9 @@
 	function mail_loop() {
 		nodeList = db.querySelectorAll('#js-result');
 		forEach(nodeList, function (index, e) {
-			node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos, .smack-images, .smack-map, .smack-metro,' +
-									  '.smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person, .smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
+			node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos,' +
+									  '.smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person,' +
+									  '.smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
 			pNrC(node);
 			position = getUrlVars().sf;
 			if (position > 0) {
@@ -533,7 +542,7 @@
 	}
 
 	function mail() {
-		GM_addStyle('.se-num{float:left;margin-left:8px;margin-right:8px;font-size:17px;color:#c03;font-weight:700;}' +
+		GM_addStyle('.se-num{float:left;margin-left:8px;margin-right:8px;font-size:18px;color:#c03;font-weight:700;}' +
 					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .yandex-rtb_top, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail,' +
 					'#layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
@@ -544,8 +553,7 @@
 					'.result__microdata_video__img, .result__person__img{margin-right:15px !important;}' +
 					'.layout_two-coll .layout-content__wrapper{margin-right:0 !important;}' +
 					'.responses{max-width:800px;width:800px !important;}' +
-					'.rightcol .layout-content__wrapper{border-right:none;width:800px !important;}' +
-					'.snippet-sitelinks{margin-left:30px !important;}');
+					'.rightcol .layout-content__wrapper{border-right:none;width:800px !important;}');
 		window.addEventListener('DOMNodeInserted', function(){
 			db = document.body;
 			if (db.querySelectorAll('.result__li').length > 0 && db.querySelectorAll('.se-num').length === 0) {
