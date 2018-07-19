@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.5
+// @version 1.6
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -365,7 +365,7 @@
 						node[i].className += ' se-serp-adv-item';
 					} else if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
 						node[i].className += ' se-badnode';
-					} else if (node[i].querySelectorAll('.organic__title-wrapper_lines_2').length > 0) {
+					} else if (node[i].querySelectorAll('.organic__title-wrapper_lines_2, .composite_gap_s').length > 0) {
 						node[i].className += ' se-badnode';
 					} else if (node[i].querySelectorAll('.composite').length > 0 &&
 							   node[i].querySelectorAll('.composite .composite__item .controls-carousel, .composite .composite__item .gallery').length > 0) {
@@ -425,6 +425,11 @@
 		onOff.addEventListener("click", obj, false);
 	}
 
+	function yandex_region(e) {
+		e.href=curLoc.protocol + '//tune.' + curLoc.hostname.replace('www.', '') + '/region/?retpath=' + curLoc.protocol + '//' + curLoc.hostname + curLoc.pathname + '?text=' + getUrlVars().text;
+		e.className += ' se-region-link-changed';
+	}
+
 	function yandex() {
 		if (curLoc.pathname.indexOf('/tune/geo/') >= 0) {
 			document.getElementById('city__front-input').select();
@@ -445,15 +450,17 @@
 						'.footer .footer__inner{padding:10px !important;}' +
 						'.footer .footer__line{line-height:20px !important;}' +
 						'.misspell__message{color:#c03;font-weight:700 !important;}' +
-						'.region-change__link, .region-change__link:visited{color:#c03 !important;}' +
+						'.region-change__link, .region-change__link:visited{color:#c03 !important;opacity:1 !important;}' +
+						'.region-change__link:hover{color:#000 !important;}' +
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
 						'.se-bar-direct{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
+						'.se-bar-footer{padding:1px 0 0 17px;}' +
 						'.se-checkbox-direct{padding:0 8px;color:#999;}' +
 						'.se-checkbox-footer{position:relative;padding-left:26px;font-weight:700;opacity:.45;}' +
-						'.se-checkbox-footer:hover, .region-change__link{opacity:1 !important;}' +
+						'.se-checkbox-footer:hover{opacity:1 !important;}' +
 						'.se-checkbox-on-off{position:relative;display:inline-block;width:35px;height:15px;padding-right:2px;overflow:hidden;vertical-align:sub;}' +
 						'.se-checkbox-on-off input[type=checkbox]{position:absolute;margin:0;width:37px;height:15px;opacity:0;cursor:pointer;}' +
 						'.se-checkbox-on-off input[type=checkbox]:checked+label{background-color:#090;}' +
@@ -474,6 +481,10 @@
 				if (db.querySelectorAll('.serp-footer__wrapper').length !== 0 && db.querySelectorAll('.se-bar-footer').length === 0) {
 					sessionStorage.setItem('footerStatus', 'se-off');
 					yandex_switches('.serp-footer__wrapper', '.serp-footer__main', 'footer', 'Footer', ' serp-footer__link');
+				}
+				if (db.querySelectorAll('.se-region-link-changed').length === 0 || sessionStorage.getItem('savedLocation') !== curLoc.search) {
+					sessionStorage.setItem('savedLocation', curLoc.search);
+					yandex_region(db.getElementsByClassName('region-change__link')[0]);
 				}
 			}, false);
 		}
@@ -629,9 +640,10 @@
 	}
 
 	function bing() {
-		GM_addStyle('.se-num{float:left;margin-right:8px;line-height:24px;font-size:20px;color:#c03;font-family:"Segoe UI";font-weight:500;}' +
-					'.b_ad, .b_ad, .b_ans{display:none !important;}' +
+		GM_addStyle('.se-num{margin-right:8px;color:#c03;font-weight:500;}' +
+					'.b_ad, .b_ans{display:none !important;}' +
 					'#b_results{width:700px;}' +
+					'#b_results>li{margin:0;}' +
 					'#b_content{padding:0 0 0 100px;}' +
 					'#b_results > .b_pag{padding:18px 0 18px 20px;}' +
 					'#b_results > .b_algo{padding:0 20px;}' +
@@ -644,7 +656,7 @@
 		} else {
 			position = 0;
 		}
-		addPosition('.b_algo');
+		addPosition('.b_algo h2');
 	}
 
 	function sputnik() {
