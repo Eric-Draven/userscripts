@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.6.1
+// @version 1.6.2
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -12,6 +12,8 @@
 // @include *://yandex.fr/*
 // @include *://yandex.by/*
 // @include *://yandex.kz/*
+// @include *://yandex.uz/*
+// @include *://yandex.lt/*
 // @include *://yandex.com/*
 // @include *://yandex.com.tr/*
 // @include *://www.yandex.ru/*
@@ -19,6 +21,7 @@
 // @include *://www.yandex.fr/*
 // @include *://www.yandex.by/*
 // @include *://www.yandex.kz/*
+// @include *://www.yandex.uz/*
 // @include *://www.yandex.com/*
 // @include *://www.yandex.com.tr/*
 // @include *://news.yandex.ru/*
@@ -26,6 +29,7 @@
 // @include *://news.yandex.fr/*
 // @include *://news.yandex.by/*
 // @include *://news.yandex.kz/*
+// @include *://news.yandex.uz/*
 // @include *://news.yandex.com/*
 // @include *://news.yandex.com.tr/*
 // @include *://go.mail.ru/search?*
@@ -43,6 +47,8 @@
 // @match *://yandex.fr/*
 // @match *://yandex.by/*
 // @match *://yandex.kz/*
+// @match *://yandex.uz/*
+// @match *://yandex.lt/*
 // @match *://yandex.com/*
 // @match *://yandex.com.tr/*
 // @match *://www.yandex.ru/*
@@ -50,6 +56,7 @@
 // @match *://www.yandex.fr/*
 // @match *://www.yandex.by/*
 // @match *://www.yandex.kz/*
+// @match *://www.yandex.uz/*
 // @match *://www.yandex.com/*
 // @match *://www.yandex.com.tr/*
 // @match *://news.yandex.ru/*
@@ -57,6 +64,7 @@
 // @match *://news.yandex.fr/*
 // @match *://news.yandex.by/*
 // @match *://news.yandex.kz/*
+// @match *://news.yandex.uz/*
 // @match *://news.yandex.com/*
 // @match *://news.yandex.com.tr/*
 // @match *://go.mail.ru/search?*
@@ -270,14 +278,16 @@
 (function () {
 	'use strict';
 
-	let i,
-		db = document.body,
+	var i,
+		d = document,
 		span,
 		node,
-		head,
+		nodes,
+		head = d.head || d.getElementsByTagName('head')[0],
 		style,
 		position,
 		curLoc = window.top.location,
+		MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver,
 		mutation,
 		mutation_config = {
 			childList: true,
@@ -285,11 +295,11 @@
 		};
 
 	function GM_addStyle(css) {
-		head = document.head || document.getElementsByTagName('head')[0];
 		if (head) {
-			style = document.createElement('style');
+			style = d.createElement('style');
 			style.type = 'text/css';
 			style.textContent = css;
+			style.title = 'SE-CSS';
 			head.appendChild(style);
 			return style;
 		}
@@ -297,7 +307,7 @@
 	}
 
 	function getUrlVars() {
-		let vars = {},
+		var vars = {},
 			parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 				vars[key] = value;
 			});
@@ -305,23 +315,21 @@
 	}
 
 	function forEach(array, callback, scope) {
-		for (let i = 0; i < array.length; i++) {
+		for (var i = 0; i < array.length; i++) {
 			callback.call(scope, i, array[i]);
 		}
 	}
 
 	function pNrC(node) {
-		if(node.length > 0) {
-			for (let i = 0; i < node.length; i++) {
-				node[i].innerHTML = '';
-				node[i].parentNode.removeChild(node[i]);
-			}
+		for (var i = 0; i < node.length; i++) {
+			node[i].innerHTML = '';
+			node[i].parentNode.removeChild(node[i]);
 		}
 	}
 
 	function addPosition(addTo) {
-		forEach(db.querySelectorAll(addTo), function (index, e) {
-			span = document.createElement('span');
+		forEach(d.querySelectorAll(addTo), function (index, e) {
+			span = d.createElement('span');
 			span.className = 'se-num';
 			span.textContent = (position + 1) + '.';
 			e.insertBefore(span, e.firstChild);
@@ -330,7 +338,7 @@
 	}
 
 	function ifCacheCleared(key) {
-		let sS = sessionStorage.getItem(key);
+		var sS = sessionStorage.getItem(key);
 		switch (sS) {
 			case "se-on":
 				GM_addStyle('.se-serp-adv-item{display:block !important;}');
@@ -344,70 +352,51 @@
 	}
 
 	function yandex_loop() {
-		forEach(db.querySelectorAll('.content__left ul'), function (index, e) {
+		forEach(d.querySelectorAll('.main__top, #search-result'), function (index, e) {
 			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode):not(.se-serp-adv-item)').length > 0) {
-				node = e.querySelectorAll('.t-construct-adapter__videowiz, .t-construct-adapter__default-search');
-				pNrC(node);
-				node = e.getElementsByClassName('serp-adv-item');
+				node = e.querySelectorAll('.serp-item');
 				for (i = 0; i < node.length; i++) {
-					node[i].className += ' se-serp-adv-item';
-				}
-				node = e.querySelectorAll('.serp-item:not(.se-serp-adv-item) > div > .organic__subtitle > span[class^=organic__]');
-				for (i = 0; i < node.length; i++) {
-					if (node[i].querySelectorAll('.label_color_yellow').length === 0 && node[i].querySelectorAll('*').length === 0) {
-						try {
-							node[i]._shadowRoot = node[i].attachShadow({mode:'open'});
-						} catch (err) {
-							node[i].className += ' se-protected-adv';
-						}
-					}
-				}
-				node = e.querySelectorAll('.serp-item:not(.se-serp-adv-item)');
-				for (i = 0; i < node.length; i++) {
-					if (node[i].querySelectorAll('.se-protected-adv, .label_color_yellow').length > 0) {
+					if (node[i].getAttribute('data-fast-wzrd') !== null && node[i].getAttribute('data-fast-subtype') !== null ||
+						node[i].getAttribute('data-fast-wzrd') !== null && node[i].getAttribute('data-first-snippet') !== null) {
+						node[i].className += ' se-badnode';
+					} else if (node[i].querySelectorAll('h2 a[data-counter]').length === 0) {
 						node[i].className += ' se-serp-adv-item';
-					} else if (node[i].querySelectorAll('.extralinks, .video2_theme_online').length === 0) {
-						node[i].className += ' se-badnode';
-					} else if (node[i].querySelectorAll('.organic__title-wrapper_lines_2, .composite_gap_s').length > 0) {
-						node[i].className += ' se-badnode';
-					} else if (node[i].querySelectorAll('.composite').length > 0 &&
-							   node[i].querySelectorAll('.composite .composite__item .controls-carousel, .composite .composite__item .gallery').length > 0) {
-						node[i].className += ' se-badnode';
 					} else {
 						node[i].className += ' se-goodnode';
 					}
 				}
-				position = getUrlVars().p;
-				if (position > 0) {
-					position = position * e.getElementsByClassName('se-goodnode').length;
-				} else {
-					position = 0;
-				}
-				addPosition('.se-goodnode h2 a .organic__url-text');
-				ifCacheCleared('directStatus');
 			}
 		});
+
+		position = getUrlVars().p;
+		if (position > 0) {
+			position = position * d.getElementsByClassName('se-goodnode').length;
+		} else {
+			position = 0;
+		}
+		addPosition('.se-goodnode h2');
+		ifCacheCleared('directStatus');
 	}
 
 	function yandex_switches(parent, toHide, name, title, esp1) {
-		let checkboxStatus = '',
+		var checkboxStatus = '',
 			countDirect = '',
-			panel = document.createElement('div'),
-			getParent = db.querySelectorAll(parent)[0];
+			panel = d.createElement('div'),
+			getParent = d.querySelectorAll(parent)[0];
 		if (name === 'direct'){
-			countDirect = ' (' + db.querySelectorAll(".content__left .se-serp-adv-item").length + ')';
+			countDirect = ' (' + d.querySelectorAll(".content__left .se-serp-adv-item").length + ')';
 			if (sessionStorage.getItem('directStatus') === 'se-on'){
 				checkboxStatus = 'checked="" ';
 			}
 		}
 		panel.className = 'se-bar-' + name;
-		panel.innerHTML = '<div class="se-checkbox-' + name + esp1 + '">' + title + ': ' +
+		panel.innerHTML = '<span class="se-checkbox-' + name + esp1 + '">' + title + ': ' +
 			'<span class="se-checkbox-on-off">' +
 			'<input id="se-checkbox-on-off-' + name + '" ' + checkboxStatus + 'type="checkbox">' +
 			'<label><span class="checked"></span><span class="toggle"></span><span class="unchecked"></span></label>' +
-			'</span>' + countDirect + '</div>';
+			'</span>' + countDirect + '</span>';
 		getParent.appendChild(panel);
-		let onOff = document.getElementById('se-checkbox-on-off-' + name),
+		var onOff = d.getElementById('se-checkbox-on-off-' + name),
 			obj = {
 				handleEvent: function() {
 					switch (sessionStorage.getItem(name + 'Status')) {
@@ -428,32 +417,32 @@
 	}
 
 	function yandex() {
-		if (curLoc.pathname.indexOf('/tune/geo/') >= 0) {
-			document.getElementById('city__front-input').select();
-			GM_addStyle('.geo-map{display:none !important;}');
+		if (curLoc.pathname.indexOf('/tune/geo') >= 0) {
+			d.getElementById('city__front-input').select();
+			d.getElementsByClassName('geo-map')[0].style = 'display:none !important;';
 		} else if (curLoc.hostname.indexOf('news.yandex.') >= 0) {
-			GM_addStyle('.sticky_visible, .proffit_visible{display:none !important;}' +
+			GM_addStyle('.yaplus, .sticky_visible, .proffit_visible{display:none !important;}' +
 						'.story-item__title{font-size:18px !important;}' +
 						'.document__provider-name{color:#c03 !important;}');
 		} else if (curLoc.pathname.indexOf('/search/') >= 0 || curLoc.pathname.indexOf('/yandsearch') >= 0) {
-			GM_addStyle('.se-num{margin:2px 8px 0 8px;color:#c03;font-weight:700;}' +
-						'.se-badnode, .distr-default-search, .distro, .extended-meta, .page-content__col_pos_right, .profit_layout_footer, .content .content__right,' +
-						'.related, .main__carousel, .serp-user__login-input, .serp-user__password-input, .serp-user__user-login, .showcase, .promo-popup, .popup_autoclosable_no,' +
-						'.z-default-search, .logo-description, .distr-popup__content, .wrapper__cell_type_thumb .grid__col, .yaplus, .yaplus__tooltip, .serp-footer__main{display:none !important;}' +
+			GM_addStyle('.se-num{margin:2px 8px 0 8px;color:#c03;font-weight:700;cursor:default;}' +
+						'.se-badnode, .related, .related__hidden, .content .content__right, .wrapper__cell_type_thumb, .ya-chat-widget, .serp-footer__main,' +
+						'.yaplus, .yaplus__tooltip, .header-favorites-button, .serp-header .notifier, .Composite-Item:not(:first-child), .showcase{display:none !important;}' +
 						'body .main{padding-bottom:10px !important;}' +
 						'body .footer{background-color:#555 !important;padding:4px !important;}' +
 						'body .serp-header_has-head-stripe_yes{margin:0 !important;}' +
 						'.footer .footer__inner{padding:10px !important;}' +
 						'.footer .footer__line{line-height:20px !important;}' +
-						'.misspell__message{color:#c03;font-weight:700 !important;}' +
 						'.region-change__link, .region-change__link:visited{color:#c03 !important;opacity:1 !important;}' +
 						'.region-change__link:hover{color:#000 !important;}' +
 						'.content .content__left{width:800px !important;}' +
 						'.intents .intents__container{margin:4px 0 0 30px !important;}' +
 						'.competitors__link{margin-right:10px !important;}' +
 						'.misspell, .serp-item, .se-serp-adv-item, .pager{margin-bottom:12px !important;}' +
-						'.se-bar-direct{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;vertical-align:middle;line-height:40px;}' +
-						'.se-bar-footer{padding:1px 0 0 17px;}' +
+						'.serp-list > .serp-item > .composite{margin-bottom:0 !important;}' +
+						'.se-bar-direct{display:inline-block;font-size:14px;font-weight:400;text-transform:none;letter-spacing:0;cursor:default;}' +
+						'.se-bar-footer{padding-left:17px;}' +
+						'.se-bar-footer span{transition:opacity 0.2s ease 0s;}' +
 						'.se-checkbox-direct{padding:0 8px;color:#999;}' +
 						'.se-checkbox-footer{position:relative;padding-left:26px;font-weight:700;opacity:.45;}' +
 						'.se-checkbox-footer:hover{opacity:1 !important;}' +
@@ -466,29 +455,23 @@
 						'.se-checkbox-on-off .checked, .se-checkbox-on-off input[type=checkbox]:checked+label .unchecked{width:0;}' +
 						'.se-checkbox-on-off .toggle{background-color:#fff;width:13px;border-radius:13px;}' +
 						'.se-checkbox-on-off .unchecked, .se-checkbox-on-off input[type=checkbox]:checked+label .checked{width:22px;}');
-			mutation = new MutationObserver(function (m) {
-				m.forEach(function (m) {
-					if (m.addedNodes.length > 0) {
-						if (db.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0 &&
-							db.getElementsByClassName('se-num').length === 0) {
-							yandex_loop();
-						}
-						if (db.getElementsByClassName('se-bar-direct').length === 0) {
-							yandex_switches('.navigation__region', '.se-serp-adv-item', 'direct', 'Я.Директ', '');
-						}
-						if (db.getElementsByClassName('serp-footer__wrapper').length !== 0 && db.getElementsByClassName('se-bar-footer').length === 0) {
-							sessionStorage.setItem('footerStatus', 'se-off');
-							yandex_switches('.serp-footer__wrapper', '.serp-footer__main', 'footer', 'Footer', ' serp-footer__link');
-						}
-					}
-				});
-			});
-			mutation.observe(db, mutation_config);
+
+			if (d.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode)').length > 0 &&
+				d.getElementsByClassName('se-num').length === 0) {
+				yandex_loop();
+				if (d.getElementsByClassName('se-bar-direct').length === 0) {
+					yandex_switches('.navigation__region', '.se-serp-adv-item', 'direct', 'Я.Директ', '');
+				}
+				if (d.getElementsByClassName('serp-footer__wrapper').length !== 0 && d.getElementsByClassName('se-bar-footer').length === 0) {
+					sessionStorage.setItem('footerStatus', 'se-off');
+					yandex_switches('.serp-footer__wrapper', '.serp-footer__main', 'footer', 'Footer', ' serp-footer__link');
+				}
+			}
 		}
 	}
 
 	function google_loop() {
-		forEach(db.querySelectorAll('#res'), function (index, e) {
+		forEach(d.querySelectorAll('#res'), function (index, e) {
 			if (e.getElementsByClassName('se-num').length === 0) {
 				node = e.querySelectorAll('.g.mnr-c.g-blk, #imagebox_bigimages, .g.mod, .g._rk, .g ._rk, .mod .g, .vk_c');
 				pNrC(node);
@@ -502,19 +485,24 @@
 						node[i].parentNode.removeChild(node[i]);
 					}
 				}
-				node = e.querySelectorAll('.g h3 a');
+				node = e.querySelectorAll('.g h3 a, .g a h3');
 				for (i = 0; i < node.length; i++) {
-					node[i].target = '_blank';
+					if (node[i].tagName === 'H3') {
+						node[i].parentNode.target = '_blank';
+					} else {
+						node[i].target = '_blank';
+					}
 				}
-				position = getUrlVars().start;
-				if (position > 0) {
-					position = position++;
-				} else {
-					position = 0;
-				}
-				addPosition('#res .g');
 			}
 		});
+
+		position = getUrlVars().start;
+		if (position > 0) {
+			position = position++;
+		} else {
+			position = 0;
+		}
+		addPosition('#res .g');
 	}
 
 	function google() {
@@ -525,31 +513,37 @@
 					'.g{margin-bottom:15px !important;}' +
 					'#cnt #center_col{width:850px !important;}' +
 					'.s{max-width:848px !important;}');
-		if (db.querySelectorAll('.mw #rcnt .g').length > 0) {
+		if (d.querySelectorAll('.mw #rcnt .g').length > 0) {
 			google_loop();
 		}
 	}
 
 	function mail_loop() {
-		forEach(db.querySelectorAll('#js-result'), function (index, e) {
-			node = e.querySelectorAll('.smack-afisha, .smack-answer, .smack-app, .smack-calendar, .smack-converter, .smack-facts, .smack-games, .smack-howtos,' +
-									  '.smack-images, .smack-map, .smack-metro, .smack-music, .smack-music-artist, .smack-news, .smack-newstext, .smack-person,' +
-									  '.smack-recipes, .smack-spritze, .smack-tagpages, .smack-torg, .smack-tv-programm, .smack-video, .smack-weather');
-			pNrC(node);
-			position = getUrlVars().sf;
-			if (position > 0) {
-				position = position++;
-			} else {
-				position = 0;
+		forEach(d.querySelectorAll('#js-result'), function (index, e) {
+			node = e.getElementsByClassName('result__li');
+			nodes = [];
+			for (i = 0; i < node.length; i++) {
+				if (node[i].classList.length > 1 || node[i].getElementsByClassName('result__title').length === 0) {
+					nodes.push(node[i])
+				}
 			}
-			addPosition('.result__li');
 		});
+		nodes = nodes.concat(Array.from(d.querySelectorAll('#js-bottom-also-looking-queries, #js-topBar > div, #js-bottomBar > section, #js-bottomBar > div')));
+		pNrC(nodes);
+
+		position = getUrlVars().sf;
+		if (position > 0) {
+			position = position++;
+		} else {
+			position = 0;
+		}
+		addPosition('.result__li');
 	}
 
 	function mail() {
 		GM_addStyle('.se-num{float:left;margin-left:8px;margin-right:8px;font-size:18px;color:#c03;font-weight:700;}' +
 					'#layout-carousel, .js-container, #js-bottomBlock .ya-block, .yandex-rtb_top, .fuab_bottom, #layout #layout-content #js-topBlock, .result__address, #js-kb-col-right, .responses__pxtRBMail,' +
-					'#layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .footer__wrap .footer-neuro, .footer-blocks{display:none !important;}' +
+					'#layout #layout-content .responses > div[class] > div[id] > div[class], #section-web .alqs, .SnippetResultImage-container{display:none !important;}' +
 					'.result__li{margin-bottom:4px !important;}' +
 					'.layout-content__wrapper{padding-bottom:0px !important;}' +
 					'.block-info-serp__url{font-size:15px !important;}' +
@@ -563,32 +557,18 @@
 			m.forEach(function (m) {
 				if (m.addedNodes.length > 0 &&
 					m.addedNodes[0].className !== 'se-num' &&
-					db.getElementsByClassName('result__li').length > 0 &&
-					db.getElementsByClassName('se-num').length === 0) {
+					d.getElementsByClassName('result__li').length > 0 &&
+					d.getElementsByClassName('se-num').length === 0) {
 					mail_loop();
-					node = db.querySelectorAll('body > div[id^=tb-], #amigoTopBn, #js-topBlock > section, #js-bottomBlock > section, #js-bottomBlock > div');
-					pNrC(node);
 				}
 			});
 		});
-		mutation.observe(db, mutation_config);
-	}
-
-	function rambler_loop() {
-		forEach(db.querySelectorAll('.l-main-col'), function (index, e) {
-			position = getUrlVars().page;
-			if (position > 0) {
-				position = --position * e.getElementsByClassName('b-serp-item').length;
-			} else {
-				position = 0;
-			}
-			addPosition('.b-serp-item');
-		});
+		mutation.observe(d, mutation_config);
 	}
 
 	function rambler() {
 		GM_addStyle('.se-num{float:left;margin-right:8px;line-height:25px;font-size:18px;color:#c03;font-weight:500;}' +
-					'.ad, .mixednews, #recommendations, .l-aside, .l-aside-col, .b-advertising, .b-hints, .b-informers, .b-mixin, .b-podmes_images, .b-provider, .b-right-column, .b-footer__promo, .b-widgets, .head-stripe__x{display:none !important;}' +
+					'aside, [class^="Direct__item-"], [class^="Mixin__root-"], [class^="Hints__hints-"], [class^="Addons__widgets-"]{display:none !important;}' +
 					'.l-header{margin:0;}' +
 					'.b-header__search{margin:200px 0 400px 0;}' +
 					'.b-paging{margin-top:15px;}' +
@@ -604,22 +584,29 @@
 			m.forEach(function (m) {
 				if (m.addedNodes.length > 0 &&
 					m.addedNodes[0].className !== 'se-num' &&
-					db.getElementsByClassName('b-serp-item').length > 0 &&
-					db.getElementsByClassName('se-num').length === 0) {
-					rambler_loop();
-					node = db.getElementsByClassName('b-context');
+					d.querySelectorAll('[class^="LayoutSearch__maincol-"] [class^="Serp__item-"]').length > 0 &&
+					d.getElementsByClassName('se-num').length === 0) {
+					node = d.querySelectorAll('[class^="LayoutSearch__maincol-"] [class^="Direct__item-"]');
 					pNrC(node);
+					position = getUrlVars().page;
+					if (position > 0) {
+						position = --position * d.querySelectorAll('[class^="LayoutSearch__maincol-"] [class^="Serp__item-"]').length;
+					} else {
+						position = 0;
+					}
+					addPosition('[class^="LayoutSearch__maincol-"] article h2 a');
+
 				}
 			});
 		});
-		mutation.observe(db, mutation_config);
+		mutation.observe(d, mutation_config);
 	}
 
 	function yahoo() {
 		GM_addStyle('.se-num{float:left;font-size:18px;line-height:15px;margin:3px 12px 56px 0;color:#c03;font-weight:700;}' +
 					'#right, #appFinance, #browserExtensionPromotion, .searchCenterBottomAds, .searchCenterFooter, .appMathCalculator, .f5110t0q65, .dd, .ad_loc_top, .ad_loc_bot{display:none !important;}' +
 					'.assist, .wrapstar, .algo, .pagination{display:block !important;}' +
-					'.sc, #results #main #web .singlecol.sc.tt.twc, .dd, #results #web .dd, .ddgrp .dd, #results #web .ddgrp .dd, .searchCenterBottom{margin-top:0 !important;}' +
+					'.sc, #results #main #web .singlecol.sc.tt.twc, .dd, #results #web .dd, .ddgrp .dd, #results #web .ddgrp .dd, .searchCenterBottom{margin-top:8px !important;}' +
 					'#bd{min-height:auto !important;min-width:auto !important;}' +
 					'#main{margin-left:-10px;border:none !important;}' +
 					'#left{width:900px !important;}' +
@@ -630,7 +617,7 @@
 					'.dd .compForm{margin-bottom:16px !important;}' +
 					'#ft_wrapper #ft{padding-left:0;}' +
 					'#ft_wrapper #ft ul{margin-left:134px;}');
-		if (db.querySelectorAll('.wrapstar, .algo').length > 0) {
+		if (d.querySelectorAll('.wrapstar, .algo').length > 0) {
 			position = getUrlVars().b;
 			if (position > 0) {
 				position = --position;
@@ -646,7 +633,7 @@
 					'.b_ad, .b_ans{display:none !important;}' +
 					'#b_results{width:700px;}' +
 					'#b_results>li{margin:0;}' +
-					'#b_content{padding:0 0 0 100px;}' +
+					'#b_content{padding:41px 0 0 100px;}' +
 					'#b_results > .b_pag{padding:18px 0 18px 20px;}' +
 					'#b_results > .b_algo{padding:0 20px;}' +
 					'#b_footerItems{padding:0 10px;}' +
@@ -670,8 +657,8 @@
 					'.b-result{padding:0 0 8px 30px;}' +
 					'.b-result-site-main{font-size:14px;}' +
 					'.b-result-title a{clear:left;}');
-		if (db.querySelectorAll('.b-content-center .b-result').length > 0) {
-			node = db.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
+		if (d.querySelectorAll('.b-content-center .b-result').length > 0) {
+			node = d.querySelectorAll('.js-widget-currency, .js-widget-news, .js-widget-pics, .js-widget-video, .js-widget-weather, .js-widget-movie');
 			pNrC(node);
 			position = getUrlVars().from;
 			if (position > 0) {
@@ -685,7 +672,7 @@
 
 	switch (true) {
 		case curLoc.hostname.indexOf('yandex.') >= 0 &&
-			curLoc.pathname.indexOf('/tune/geo/') >= 0 ||
+			curLoc.pathname.indexOf('/tune/geo') >= 0 ||
 			curLoc.pathname.indexOf('/yandsearch') >= 0 ||
 			curLoc.pathname.indexOf('/search/') >= 0 &&
 			curLoc.pathname.indexOf('/search/customize') === -1:
