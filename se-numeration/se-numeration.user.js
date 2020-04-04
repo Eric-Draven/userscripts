@@ -2,7 +2,7 @@
 // @name Numeration for Search Engines
 // @namespace se-numeration
 // @description Нумерация для поисковиков: Yandex, Google, Mail.ru, Rambler, Yahoo, Bing, Sputnik. Полезен исключительно для пользователей системы продвижения сайтов - userator.ru
-// @version 1.6.2
+// @version 1.6.3
 // @author Eric Draven
 // @updateURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.meta.js
 // @downloadURL https://github.com/Eric-Draven/userscripts/raw/master/se-numeration/se-numeration.user.js
@@ -356,10 +356,12 @@
 			if (e.querySelectorAll('.serp-item:not(.se-badnode):not(.se-goodnode):not(.se-serp-adv-item)').length > 0) {
 				node = e.querySelectorAll('.serp-item');
 				for (i = 0; i < node.length; i++) {
-					if (node[i].getAttribute('data-fast-wzrd') !== null && node[i].getAttribute('data-fast-subtype') !== null ||
-						node[i].getAttribute('data-fast-wzrd') !== null && node[i].getAttribute('data-first-snippet') !== null) {
+					var dfw = node[i].getAttribute('data-fast-wzrd');
+					if (dfw !== null && node[i].getAttribute('data-fast-subtype') !== null ||
+						dfw !== null && node[i].getAttribute('data-first-snippet') !== null ||
+						dfw === 'zen') {
 						node[i].className += ' se-badnode';
-					} else if (node[i].querySelectorAll('h2 a[data-counter]').length === 0) {
+					} else if (node[i].querySelectorAll('h2 a[data-event-required]').length > 0) {
 						node[i].className += ' se-serp-adv-item';
 					} else {
 						node[i].className += ' se-goodnode';
